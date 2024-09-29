@@ -18,3 +18,16 @@ export const createUserTable = async () => {
 
   await query(createUserTableQuery);
 };
+
+export const createUser = async (
+  email: string,
+  password: string,
+  username: string,
+) => {
+  const createUserQuey = `
+    INSERT INTO users (email, password, username) 
+    VALUES ($1, $2, $3) RETURNING *;  
+`;
+  const result = await query(createUserQuey, [email, password, username]);
+  return result.rows[0];
+};

@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { query } from "./config/db";
 import { ApiResponse } from "./types/apiResponse";
+import errorHandler from "./middleware/errorHandler";
 
 const app = express();
 
@@ -42,4 +43,5 @@ app.get("/test-db", async (_: Request, res: Response) => {
   }
 });
 
+app.use(errorHandler);
 export default app;
