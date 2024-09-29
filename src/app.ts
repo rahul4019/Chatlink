@@ -17,10 +17,22 @@ app.get("/test-db", async (req, res) => {
     const result = await query("SELECT NOW()");
     return res.status(200).json({
       success: true,
-      msg: result.rows[0].now,
+      message: result.rows[0].now,
     });
   } catch (error) {
     console.error("Database connection failed", error);
+    if (error instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: "Database connection failed",
+        error: error.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "An unknown error occured",
+      });
+    }
   }
 });
 
