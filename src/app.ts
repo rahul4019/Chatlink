@@ -1,24 +1,30 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { query } from "./config/db";
+import { ApiResponse } from "./types/apiResponse";
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/", (_, res) => {
-  res.status(200).json({
+app.get("/", (_: Request, res: Response) => {
+  const response: ApiResponse = {
     success: true,
-    msg: "Hello from chatlink-api",
-  });
+    message: "Hello from chatlink-api",
+  };
+
+  res.status(200).json(response);
 });
 
-app.get("/test-db", async (_, res) => {
+app.get("/test-db", async (_: Request, res: Response) => {
   try {
     const result = await query("SELECT NOW()");
-    return res.status(200).json({
+
+    const response: ApiResponse<{ currentTime: string }> = {
       success: true,
-      message: result.rows[0].now,
-    });
+      data: { currentTime: result.rows[0].now },
+    };
+
+    return res.status(200).json(response);
   } catch (error) {
     console.error("Database connection failed", error);
     if (error instanceof Error) {
