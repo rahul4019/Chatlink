@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { createUser, emailExist } from "../models/userModel";
+import CustomError from "../utils/customError";
 
 export const registerUser = async (
   email: string,
@@ -10,7 +11,7 @@ export const registerUser = async (
   const userExist = await emailExist(email);
 
   if (userExist) {
-    throw new Error("Email already exists");
+    throw new CustomError("Email already exists", 400);
   }
 
   // password hashing
