@@ -2,13 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { userRegistrationSchema } from "../validators/authValidators";
 import { ApiResponse } from "../types/apiResponse";
 import { registerUser } from "../services/authServices";
-import { emailExist } from "../models/userModel";
 
 export const userRegistration = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response<ApiResponse> | void> => {
   try {
     // zod validations
     const result = userRegistrationSchema.safeParse(req.body);
@@ -29,10 +28,10 @@ export const userRegistration = async (
 
     const response: ApiResponse = {
       success: true,
-      message: "User register",
+      message: "User registered",
     };
 
-    return res.status(200).json(response);
+    return res.status(201).json(response);
   } catch (error) {
     next(error);
   }

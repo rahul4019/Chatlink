@@ -1,12 +1,13 @@
 import bcrypt from "bcrypt";
 import { createUser, emailExist } from "../models/userModel";
 import CustomError from "../utils/customError";
+import { User } from "../types/user";
 
 export const registerUser = async (
   email: string,
   password: string,
   username: string,
-) => {
+): Promise<User> => {
   // check if email already exist
   const userExist = await emailExist(email);
 

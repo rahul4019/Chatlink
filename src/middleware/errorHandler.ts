@@ -7,7 +7,7 @@ const errorHandler = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Response<ApiResponse> | void => {
   console.error(err);
 
   const response: ApiResponse = {
