@@ -10,7 +10,7 @@ export const registerUser = async (
   const userExist = await emailExist(email);
 
   if (userExist) {
-    throw new Error("Email already exists").status(200);
+    throw new Error("Email already exists");
   }
 
   // password hashing
