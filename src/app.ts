@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { query } from "./config/db";
 import { ApiResponse } from "./types/apiResponse";
+import routes from "./routes";
 import errorHandler from "./middleware/errorHandler";
 
 const app = express();
@@ -13,7 +14,7 @@ app.get("/", (_: Request, res: Response) => {
     message: "Hello from chatlink-api",
   };
 
-  res.status(200).json(response);
+  return res.status(200).json(response);
 });
 
 app.get("/test-db", async (_: Request, res: Response) => {
@@ -29,19 +30,21 @@ app.get("/test-db", async (_: Request, res: Response) => {
   } catch (error) {
     console.error("Database connection failed", error);
     if (error instanceof Error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: "Database connection failed",
         error: error.message,
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: "An unknown error occured",
       });
     }
   }
 });
+
+app.use("/api/v1", routes);
 
 app.use(errorHandler);
 export default app;
