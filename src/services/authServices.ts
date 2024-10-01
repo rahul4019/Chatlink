@@ -23,3 +23,7 @@ export const registerUser = async (
 
   return user;
 };
+
+export const loginUser = async (email: string, password: string, ip_address: string, user_agent: string)=> {
+  
+} 
