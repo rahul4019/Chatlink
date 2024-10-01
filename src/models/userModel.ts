@@ -26,11 +26,11 @@ export const createUser = async (
   password: string,
   username: string,
 ): Promise<any> => {
-  const createUserQuey = `
+  const createUserQuery = `
     INSERT INTO users (email, password, username) 
     VALUES ($1, $2, $3) RETURNING *;  
 `;
-  const result = await query(createUserQuey, [email, password, username]);
+  const result = await query(createUserQuery, [email, password, username]);
   return result.rows[0];
 };
 
