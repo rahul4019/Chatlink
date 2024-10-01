@@ -1,4 +1,5 @@
 import { query } from "../config/db";
+import CustomError from "../utils/customError";
 
 // creates user table
 export const createUserTable = async (): Promise<void> => {
@@ -30,8 +31,13 @@ export const createUser = async (
     INSERT INTO users (email, password, username) 
     VALUES ($1, $2, $3) RETURNING *;  
 `;
-  const result = await query(createUserQuery, [email, password, username]);
-  return result.rows[0];
+  try {
+    const result = await query(createUserQuery, [email, password, username]);
+    return result.rows[0];
+  } catch (error) {
+    console.log("Error creating user: ", error);
+    throw new CustomError("Could not create user", 500);
+  }
 };
 
 // checks if email already exist
@@ -41,8 +47,12 @@ export const emailExist = async (email: string): Promise<Boolean> => {
     FROM users
     WHERE email = $1;
   `;
-
-  const result = await query(emailCheckQuery, [email]);
-  // ?? => nullish coalescing operator
-  return (result.rowCount ?? 0) > 0; // will fallback to 0 if rowcount is null
+  try {
+    const result = await query(emailCheckQuery, [email]);
+    // ?? => nullish coalescing operator
+    return (result.rowCount ?? 0) > 0; // will fallback to 0 if rowcount is null
+  } catch (error) {
+    console.log("Error checking email existence: ", error);
+    throw new CustomError("Could not check email existence", 500);
+  }
 };

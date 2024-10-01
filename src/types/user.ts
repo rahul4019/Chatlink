@@ -10,3 +10,16 @@ export interface User {
   created_at?: Date;
   updated_at?: Date;
 }
+
+export interface UserSession {
+  session_id: string;
+  user_id: string;
+  access_token: string;
+  refresh_token: string;
+  expires_at: string;
+  created_at: string;
+  last_active: string;
+  ip_address?: string;
+  user_agent?: string;
+  is_valid: boolean;
+}

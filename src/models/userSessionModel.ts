@@ -1,4 +1,6 @@
 import { query } from "../config/db";
+import { UserSession } from "../types/user";
+import CustomError from "../utils/customError";
 
 // creates user_sessions table
 export const createUserSessionTable = async (): Promise<void> => {
@@ -20,16 +22,30 @@ export const createUserSessionTable = async (): Promise<void> => {
   await query(createUserSessionQuery);
 };
 
-// creates nes session for user
+// creates session for user
 export const createUserSession = async (
   user_id: string,
   refresh_token: string,
   access_token: string,
   ip_address: string,
   user_agent: string,
-) => {
+): Promise<UserSession> => {
   const createUserSessionQuery = `
     INSERT INTO user_sessions (user_id, access_token, refresh_token, ip_address, user_agent) 
     VALUES ($1, $2, $3, $4, $5) RETURNING *; 
-`;
+  `;
+  try {
+    const result = await query(createUserSessionQuery, [
+      user_id,
+      access_token,
+      refresh_token,
+      ip_address,
+      user_agent,
+    ]);
+
+    return result.rows[0];
+  } catch (error) {
+    console.log("Error creating user session: ", error);
+    throw new CustomError("Could not create user session", 500);
+  }
 };
