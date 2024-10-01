@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { createUser, emailExist } from "../models/userModel";
+import { createUser, emailExist, getUserDetails } from "../models/userModel";
 import CustomError from "../utils/customError";
 import { User } from "../types/user";
 
@@ -24,6 +24,21 @@ export const registerUser = async (
   return user;
 };
 
-export const loginUser = async (email: string, password: string, ip_address: string, user_agent: string)=> {
-  
-} 
+export const loginUser = async (
+  email: string,
+  password: string,
+  ip_address: string,
+  user_agent: string,
+) => {
+  // compare the password
+  const userDetails: User = await getUserDetails(email);
+
+  const isPasswordCorrect = await bcrypt.compare(
+    password,
+    userDetails.password,
+  );
+
+  if (!isPasswordCorrect) {
+    throw new CustomError("Incorrect Password", 401);
+  }
+};

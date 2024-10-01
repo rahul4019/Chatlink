@@ -1,4 +1,5 @@
 import { query } from "../config/db";
+import { User } from "../types/user";
 import CustomError from "../utils/customError";
 
 // creates user table
@@ -54,5 +55,21 @@ export const emailExist = async (email: string): Promise<Boolean> => {
   } catch (error) {
     console.log("Error checking email existence: ", error);
     throw new CustomError("Could not check email existence", 500);
+  }
+};
+
+// get user details
+export const getUserDetails = async (email: string): Promise<User> => {
+  const getUserDetailsQuery = `
+    SELECT * 
+    FROM users
+    WHERE email = $1;
+  `;
+  try {
+    const result = await query(getUserDetailsQuery, [email]);
+    return result.rows[0];
+  } catch (error) {
+    console.log("Error getting user details ", error);
+    throw new CustomError("Could not get user details", 500);
   }
 };
