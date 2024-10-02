@@ -2,6 +2,29 @@ import bcrypt from "bcrypt";
 import { createUser, emailExist, getUserDetails } from "../models/userModel";
 import CustomError from "../utils/customError";
 import { User } from "../types/user";
+import jwt from "jsonwebtoken";
+
+export const generateAccessToken = (user_id: string): string => {
+  const accessToken = jwt.sign(
+    { user_id },
+    process.env.ACCESS_TOKEN_SECRET as string,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY as string,
+    },
+  );
+  return accessToken;
+};
+
+export const generateRefreshToken = (user_id: string): string => {
+  const refreshToken = jwt.sign(
+    { user_id },
+    process.env.REFRESH_TOKEN_SECRET as string,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY as string,
+    },
+  );
+  return refreshToken;
+};
 
 export const registerUser = async (
   email: string,
@@ -30,9 +53,9 @@ export const loginUser = async (
   ip_address: string,
   user_agent: string,
 ) => {
-  // compare the password
   const userDetails: User = await getUserDetails(email);
 
+  // compare the password
   const isPasswordCorrect = await bcrypt.compare(
     password,
     userDetails.password,
