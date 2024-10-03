@@ -1,8 +1,9 @@
 import bcrypt from "bcrypt";
 import { createUser, emailExist, getUserDetails } from "../models/userModel";
 import CustomError from "../utils/customError";
-import { User } from "../types/user";
+import { User, UserSession } from "../types/user";
 import jwt from "jsonwebtoken";
+import { createUserSession } from "../models/userSessionModel";
 
 export const generateAccessToken = (user_id: string): string => {
   const accessToken = jwt.sign(
@@ -52,8 +53,15 @@ export const loginUser = async (
   password: string,
   ip_address: string,
   user_agent: string,
-) => {
+): Promise<UserSession> => {
   const userDetails: User = await getUserDetails(email);
+
+  // check if user exist
+  const userExist = await emailExist(email);
+
+  if (!userExist) {
+    throw new CustomError("First register your email.", 400);
+  }
 
   // compare the password
   const isPasswordCorrect = await bcrypt.compare(
@@ -64,4 +72,18 @@ export const loginUser = async (
   if (!isPasswordCorrect) {
     throw new CustomError("Incorrect Password", 401);
   }
+
+  const accessToken = generateAccessToken(userDetails.id);
+  const refreshToken = generateRefreshToken(userDetails.id);
+
+  // create a session for user
+  const userSession = await createUserSession(
+    userDetails.id,
+    accessToken,
+    refreshToken,
+    ip_address,
+    user_agent,
+  );
+
+  return userSession;
 };

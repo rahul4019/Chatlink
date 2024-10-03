@@ -30,15 +30,19 @@ export const createUserSession = async (
   ip_address: string,
   user_agent: string,
 ): Promise<UserSession> => {
+  const refreshTokenExpiry = 7 * 24 * 60 * 60 * 1000;
+  const expiresAt = new Date(Date.now() + refreshTokenExpiry);
+
   const createUserSessionQuery = `
-    INSERT INTO user_sessions (user_id, access_token, refresh_token, ip_address, user_agent) 
-    VALUES ($1, $2, $3, $4, $5) RETURNING *; 
+    INSERT INTO user_sessions (user_id, access_token, refresh_token, expires_at, ip_address, user_agent) 
+    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *; 
   `;
   try {
     const result = await query(createUserSessionQuery, [
       user_id,
       access_token,
       refresh_token,
+      expiresAt,
       ip_address,
       user_agent,
     ]);

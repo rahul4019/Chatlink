@@ -3,10 +3,12 @@ import { query } from "./config/db";
 import { ApiResponse } from "./types/apiResponse";
 import routes from "./routes";
 import errorHandler from "./middleware/errorHandler";
+import requestIp from "request-ip";
 
 const app = express();
 
 app.use(express.json());
+app.use(requestIp.mw());
 
 app.get("/", (_: Request, res: Response) => {
   const response: ApiResponse = {
