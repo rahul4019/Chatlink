@@ -73,3 +73,26 @@ export const getUserDetails = async (email: string): Promise<User> => {
     throw new CustomError("Could not get user details", 500);
   }
 };
+
+// get user details by userId
+export const getUserDetailsById = async (id: string): Promise<User> => {
+  const getUserDetailsQuery = `
+    SELECT 
+    id,
+    email,
+    username,
+    profile_piture,
+    status_message,
+    is_online,
+    last_seen,
+    FROM users
+    WHERE id = $1;
+  `;
+  try {
+    const result = await query(getUserDetailsQuery, [id]);
+    return result.rows[0];
+  } catch (error) {
+    console.log("Error getting user details by id", error);
+    throw new CustomError("Could not get user details by id", 500);
+  }
+};
