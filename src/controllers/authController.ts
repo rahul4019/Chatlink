@@ -36,6 +36,7 @@ export const userRegistration = async (
 
     return res.status(201).json(response);
   } catch (error) {
+    console.error("Error during user registration: ", error);
     next(error);
   }
 };
@@ -92,6 +93,7 @@ export const userLogin = async (
 
     res.status(200).json(response);
   } catch (error) {
+    console.error("Error during user login: ", error);
     next(error);
   }
 };
