@@ -1,3 +1,4 @@
+import { access } from "fs";
 import { query } from "../config/db";
 import { UserSession } from "../types/user";
 import CustomError from "../utils/customError";
@@ -30,14 +31,17 @@ export const createUserSession = async (
   ip_address: string,
   user_agent: string,
 ): Promise<UserSession> => {
-  const refreshTokenExpiry = 7 * 24 * 60 * 60 * 1000;
-  const expiresAt = new Date(Date.now() + refreshTokenExpiry);
-
-  const createUserSessionQuery = `
-    INSERT INTO user_sessions (user_id, access_token, refresh_token, expires_at, ip_address, user_agent) 
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *; 
-  `;
   try {
+    const refreshTokenExpiry = 7 * 24 * 60 * 60 * 1000;
+    const expiresAt = new Date(Date.now() + refreshTokenExpiry);
+
+    const createUserSessionQuery = `
+    INSERT INTO user_sessions (
+      user_id, access_token, refresh_token, expires_at, ip_address, user_agent
+    ) 
+    VALUES ($1, $2, $3, $4, $5, $6) 
+    RETURNING *; 
+  `;
     const result = await query(createUserSessionQuery, [
       user_id,
       access_token,
@@ -51,5 +55,32 @@ export const createUserSession = async (
   } catch (error) {
     console.log("Error creating user session: ", error);
     throw new CustomError("Could not create user session", 500);
+  }
+};
+
+export const updateTokens = async (
+  user_id: string,
+  access_token: string,
+  refresh_token: string,
+): Promise<UserSession> => {
+  try {
+    const updateTokensQuery = `
+      UPDATE user_sessions
+      SET access_token = $1,
+        refresh_token = $2
+      WHERE user_id = $3
+      RETURNING *;
+    `;
+
+    const result = await query(updateTokensQuery, [
+      access_token,
+      refresh_token,
+      user_id,
+    ]);
+
+    return result.rows[0];
+  } catch (error) {
+    console.log("Error updating tokens: ", error);
+    throw new CustomError("Could not update tokens", 500);
   }
 };

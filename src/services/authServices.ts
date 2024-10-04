@@ -1,9 +1,14 @@
 import bcrypt from "bcrypt";
-import { createUser, emailExist, getUserDetails } from "../models/userModel";
+import {
+  createUser,
+  emailExist,
+  getUserDetails,
+  getUserDetailsById,
+} from "../models/userModel";
 import CustomError from "../utils/customError";
 import { User, UserSession } from "../types/user";
-import jwt from "jsonwebtoken";
-import { createUserSession } from "../models/userSessionModel";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { createUserSession, updateTokens } from "../models/userSessionModel";
 
 export const generateAccessToken = (user_id: string): string => {
   const accessToken = jwt.sign(
@@ -86,4 +91,37 @@ export const loginUser = async (
   );
 
   return userSession;
+};
+
+export const refreshAccessToken = async (
+  refreshToken: string,
+): Promise<UserSession> => {
+  const decodedToken = jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET as string,
+  ) as JwtPayload;
+  console.log("decodedToken: ", decodedToken);
+  if (!decodedToken) {
+    throw new CustomError("Invalid refresh token", 401);
+  }
+
+  const userDetails = await getUserDetailsById(decodedToken.user_id);
+
+  if (!userDetails) {
+    console.log("Test");
+    throw new CustomError("User not found", 404);
+  }
+
+  // generate new tokens
+  const newAccessToken = generateAccessToken(userDetails.id);
+  const newRefreshToken = generateRefreshToken(userDetails.id);
+
+  // update tokens in the user_session
+  const updatedUserSession = await updateTokens(
+    userDetails.id,
+    newAccessToken,
+    newRefreshToken,
+  );
+
+  return updatedUserSession;
 };

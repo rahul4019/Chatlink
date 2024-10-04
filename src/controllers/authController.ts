@@ -4,7 +4,13 @@ import {
   userRegistrationSchema,
 } from "../validators/authValidators";
 import { ApiResponse } from "../types/apiResponse";
-import { loginUser, registerUser } from "../services/authServices";
+import {
+  loginUser,
+  refreshAccessToken,
+  registerUser,
+} from "../services/authServices";
+import CustomError from "../utils/customError";
+import { UserSession } from "../types/user";
 
 export const userRegistration = async (
   req: Request,
@@ -94,6 +100,52 @@ export const userLogin = async (
     res.status(200).json(response);
   } catch (error) {
     console.error("Error during user login: ", error);
+    next(error);
+  }
+};
+
+export const refreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<Response<ApiResponse> | void> => {
+  const refreshToken: string = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    throw new CustomError("unauthorized request", 401);
+  }
+  try {
+    const updatedUserSession: UserSession =
+      await refreshAccessToken(refreshToken);
+
+    const accessTokenExpiry = 15 * 60 * 1000; // 15 minutes
+    const refreshTokenexpiry = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict" as "strict",
+    };
+
+    //  set cookies
+    res.cookie("accessToken", updatedUserSession.access_token, {
+      ...cookieOptions,
+      maxAge: accessTokenExpiry,
+    });
+
+    res.cookie("refreshToken", updatedUserSession.refresh_token, {
+      ...cookieOptions,
+      maxAge: refreshTokenexpiry,
+    });
+
+    const response: ApiResponse = {
+      success: true,
+      message: "Access token refreshed",
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error while refreshing accessToken: ", error);
     next(error);
   }
 };

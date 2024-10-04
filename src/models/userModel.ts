@@ -81,10 +81,10 @@ export const getUserDetailsById = async (id: string): Promise<User> => {
     id,
     email,
     username,
-    profile_piture,
+    profile_picture,
     status_message,
     is_online,
-    last_seen,
+    last_seen
     FROM users
     WHERE id = $1;
   `;
