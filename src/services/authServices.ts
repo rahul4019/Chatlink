@@ -6,9 +6,8 @@ import {
   getUserDetailsById,
 } from "../models/userModel";
 import CustomError from "../utils/customError";
-import { User, UserSession } from "../types/user";
+import { Tokens, User } from "../types/user";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { createUserSession, updateTokens } from "../models/userSessionModel";
 
 export const generateAccessToken = (user_id: string): string => {
   const accessToken = jwt.sign(
@@ -56,9 +55,7 @@ export const registerUser = async (
 export const loginUser = async (
   email: string,
   password: string,
-  ip_address: string,
-  user_agent: string,
-): Promise<UserSession> => {
+): Promise<Tokens> => {
   const userDetails: User = await getUserDetails(email);
 
   // check if user exist
@@ -81,26 +78,21 @@ export const loginUser = async (
   const accessToken = generateAccessToken(userDetails.id);
   const refreshToken = generateRefreshToken(userDetails.id);
 
-  // create a session for user
-  const userSession = await createUserSession(
-    userDetails.id,
+  const tokens: Tokens = {
     accessToken,
     refreshToken,
-    ip_address,
-    user_agent,
-  );
+  };
 
-  return userSession;
+  return tokens;
 };
 
 export const refreshAccessToken = async (
   refreshToken: string,
-): Promise<UserSession> => {
+): Promise<Tokens> => {
   const decodedToken = jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET as string,
   ) as JwtPayload;
-  console.log("decodedToken: ", decodedToken);
   if (!decodedToken) {
     throw new CustomError("Invalid refresh token", 401);
   }
@@ -113,15 +105,13 @@ export const refreshAccessToken = async (
   }
 
   // generate new tokens
-  const newAccessToken = generateAccessToken(userDetails.id);
+  const newAccessToken = generateAccessToken(userDetails.id) as string;
   const newRefreshToken = generateRefreshToken(userDetails.id);
 
-  // update tokens in the user_session
-  const updatedUserSession = await updateTokens(
-    userDetails.id,
-    newAccessToken,
-    newRefreshToken,
-  );
+  const tokens: Tokens = {
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+  };
 
-  return updatedUserSession;
+  return tokens;
 };

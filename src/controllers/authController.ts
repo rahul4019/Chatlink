@@ -10,7 +10,7 @@ import {
   registerUser,
 } from "../services/authServices";
 import CustomError from "../utils/customError";
-import { UserSession } from "../types/user";
+import { Tokens } from "../types/user";
 
 export const userRegistration = async (
   req: Request,
@@ -52,9 +52,6 @@ export const userLogin = async (
   res: Response,
   next: NextFunction,
 ): Promise<Response<ApiResponse> | void> => {
-  const ipAddress: string = req.clientIp ?? "unknown_ip";
-  const userAgent: string = req.headers["user-agent"] ?? "unknown_user_agent";
-
   // zod validation
   const result = userLoginSchema.safeParse(req.body);
 
@@ -70,8 +67,6 @@ export const userLogin = async (
 
   const { email, password } = result.data;
   try {
-    const userSession = await loginUser(email, password, ipAddress, userAgent);
-
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -81,13 +76,15 @@ export const userLogin = async (
     const accessTokenExpiry = 15 * 60 * 1000; // 15 minutes
     const refreshTokenexpiry = 7 * 24 * 60 * 60 * 1000; // 7 days
 
+    const tokens: Tokens = await loginUser(email, password);
+
     //  set cookies
-    res.cookie("accessToken", userSession.access_token, {
+    res.cookie("accessToken", tokens.accessToken, {
       ...cookieOptions,
       maxAge: accessTokenExpiry,
     });
 
-    res.cookie("refreshToken", userSession.refresh_token, {
+    res.cookie("refreshToken", tokens.refreshToken, {
       ...cookieOptions,
       maxAge: refreshTokenexpiry,
     });
@@ -115,8 +112,7 @@ export const refreshToken = async (
     throw new CustomError("unauthorized request", 401);
   }
   try {
-    const updatedUserSession: UserSession =
-      await refreshAccessToken(refreshToken);
+    const tokens: Tokens = await refreshAccessToken(refreshToken);
 
     const accessTokenExpiry = 15 * 60 * 1000; // 15 minutes
     const refreshTokenexpiry = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -128,12 +124,12 @@ export const refreshToken = async (
     };
 
     //  set cookies
-    res.cookie("accessToken", updatedUserSession.access_token, {
+    res.cookie("accessToken", tokens.accessToken, {
       ...cookieOptions,
       maxAge: accessTokenExpiry,
     });
 
-    res.cookie("refreshToken", updatedUserSession.refresh_token, {
+    res.cookie("refreshToken", tokens.refreshToken, {
       ...cookieOptions,
       maxAge: refreshTokenexpiry,
     });
