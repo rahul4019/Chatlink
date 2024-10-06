@@ -96,3 +96,21 @@ export const getUserDetailsById = async (id: string): Promise<User> => {
     throw new CustomError("Could not get user details by id", 500);
   }
 };
+
+export const updateProfilePicture = async (
+  id: string,
+  profilePictureURL: string,
+): Promise<void> => {
+  const updateProfilePictureQuery = `
+  UPDATE users
+  SET profile_picture = $1
+  WHERE id = $2
+  `;
+
+  try {
+    await query(updateProfilePictureQuery, [profilePictureURL, id]);
+  } catch (error) {
+    console.log("Error updating profile picture", error);
+    throw new CustomError("Could not update profile picture", 500);
+  }
+};
