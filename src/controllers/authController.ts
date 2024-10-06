@@ -106,10 +106,14 @@ export const refreshToken = async (
   res: Response,
   next: NextFunction,
 ): Promise<Response<ApiResponse> | void> => {
-  const refreshToken: string = req.cookies?.refreshToken;
+  const refreshToken: string | undefined = req.cookies?.refreshToken;
 
   if (!refreshToken) {
-    throw new CustomError("unauthorized request", 401);
+    const response: ApiResponse = {
+      success: false,
+      message: "unauthorized request",
+    };
+    return res.status(401).json(response);
   }
   try {
     const tokens: Tokens = await refreshAccessToken(refreshToken);
@@ -142,6 +146,38 @@ export const refreshToken = async (
     res.status(200).json(response);
   } catch (error) {
     console.error("Error while refreshing accessToken: ", error);
+    next(error);
+  }
+};
+
+export const logout = async (
+  _: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<Response<ApiResponse> | void> => {
+  try {
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict" as "strict",
+    };
+
+    res.clearCookie("accessToken", {
+      ...cookieOptions,
+    });
+
+    res.clearCookie("refreshToken", {
+      ...cookieOptions,
+    });
+
+    const response: ApiResponse = {
+      success: true,
+      message: "Logged out successfully",
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error("Error during logout:", error);
     next(error);
   }
 };

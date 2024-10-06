@@ -2,24 +2,28 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import CustomError from "../utils/customError";
 import { getUserDetailsById } from "../models/userModel";
+import { ApiResponse } from "../types/apiResponse";
 
 export const verifyAccessToken = async (
   req: Request,
-  _: Response,
+  res: Response,
   next: NextFunction,
-): Promise<void> => {
+): Promise<Response<ApiResponse> | void> => {
   try {
-    const accessToken: string = req.cookies?.accessToken;
+    const accessToken: string | undefined = req.cookies?.accessToken;
 
     if (!accessToken) {
-      throw new CustomError(
-        "Unauthorized request, no access token provided",
-        401,
-      );
+      const response: ApiResponse = {
+        success: false,
+        message: "Unauthorized request, no access token provided",
+      };
+
+      return res.status(401).json(response);
     }
 
     // verify the token
     let decodedToken: JwtPayload;
+
     try {
       decodedToken = jwt.verify(
         accessToken,
@@ -30,7 +34,7 @@ export const verifyAccessToken = async (
       throw new CustomError("Invalid or expired access token", 401);
     }
 
-    const userDetails = await getUserDetailsById(decodedToken.id);
+    const userDetails = await getUserDetailsById(decodedToken.user_id);
 
     if (!userDetails) {
       console.error("No user found for the provided token ID");
