@@ -28,3 +28,14 @@ export const s3Upload = async (file: Express.Multer.File) => {
 
   return Location; // This is the file URL on S3
 };
+
+export const deleteExistingProfilePicture = async (url: string) => {
+  const fileName = url.split("/").pop();
+
+  const deleteParams = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME as string,
+    Key: `profile_pictures/${fileName}`, // images will be saved in profile_pictures directory
+  };
+
+  await s3.deleteObject(deleteParams).promise();
+};

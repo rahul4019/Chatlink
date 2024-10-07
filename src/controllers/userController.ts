@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiResponse } from "../types/apiResponse";
 import CustomError from "../utils/customError";
-import { s3Upload } from "../utils/s3Upload";
+import { deleteExistingProfilePicture, s3Upload } from "../utils/s3Upload";
 import { updateUserProfilePicture } from "../services/userServices";
+import { getProfilePictureById } from "../models/userModel";
 
 export const updateProfilePicture = async (
   req: Request,
@@ -21,10 +22,18 @@ export const updateProfilePicture = async (
       };
       return res.status(400).json(response);
     }
-    // get the url and delete the profile picture from the bucket if user is updating the profile_picture
 
-    
+    // get the url and delete the profile picture from the bucket if user is updating the profile_picture
+    const currentProfilePicture: string | null = await getProfilePictureById(
+      req.user.id,
+    );
+
+    if (currentProfilePicture) {
+      await deleteExistingProfilePicture(currentProfilePicture);
+    }
+
     const fileURL = await s3Upload(req.file);
+
     await updateUserProfilePicture(req.user.id, fileURL);
 
     const response: ApiResponse = {
