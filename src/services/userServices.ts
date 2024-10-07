@@ -2,6 +2,7 @@ import {
   getUserDetailsById,
   updateProfilePicture,
   updateUserDetailsById,
+  userNameExist,
 } from "../models/userModel";
 import CustomError from "../utils/customError";
 
@@ -33,4 +34,10 @@ export const updateUser = async (
   };
 
   await updateUserDetailsById(id, toUpdate);
+};
+
+export const checkUsernameExist = async (
+  username: string,
+): Promise<boolean> => {
+  return await userNameExist(username);
 };

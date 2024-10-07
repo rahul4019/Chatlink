@@ -169,10 +169,11 @@ export const userNameExist = async (username: string): Promise<boolean> => {
       FROM users
       WHERE username = $1;
     `;
-    const result = await query(userNameExistQuery, [username]);
 
+    const result = await query(userNameExistQuery, [username]);
     const count = Number(result.rows[0].count);
-    return count > 0;
+
+    return count === 0;
   } catch (error) {
     console.log("Error checking unique username", error);
     throw new CustomError("Could not check unique username", 500);

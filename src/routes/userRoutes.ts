@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  isUsernameUnique,
   updateProfilePicture,
   updateUserDetails,
 } from "../controllers/userController";
@@ -16,4 +17,6 @@ router.post(
 );
 
 router.put("/update", verifyAccessToken, updateUserDetails);
+
+router.get("/unique-username", isUsernameUnique);
 export default router;

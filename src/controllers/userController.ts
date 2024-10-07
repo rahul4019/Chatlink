@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { ApiResponse } from "../types/apiResponse";
 import CustomError from "../utils/customError";
 import { deleteExistingProfilePicture, s3Upload } from "../utils/s3Upload";
-import { updateUser, updateUserProfilePicture } from "../services/userServices";
+import {
+  checkUsernameExist,
+  updateUser,
+  updateUserProfilePicture,
+} from "../services/userServices";
 import { getProfilePictureById } from "../models/userModel";
 import { userUpdateSchema } from "../validators/userValidators";
 
@@ -91,6 +95,46 @@ export const updateUserDetails = async (
     return res.status(200).json(response);
   } catch (error) {
     console.log("Error while updating user details: ", error);
+    next(error);
+  }
+};
+
+export const isUsernameUnique = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<Response<ApiResponse> | void> => {
+  try {
+    const { username } = req.body;
+
+    if (!username) {
+      const response: ApiResponse = {
+        success: false,
+        message: "Please provide a username",
+      };
+
+      return res.status(400).json(response);
+    }
+
+    const uniqueUsername = await checkUsernameExist(username);
+
+    if (uniqueUsername) {
+      const response: ApiResponse = {
+        success: true,
+        message: "Unique username",
+      };
+
+      return res.status(200).json(response);
+    }
+
+    const response: ApiResponse = {
+      success: false,
+      message: "Username already taken",
+    };
+
+    return res.status(400).json(response);
+  } catch (error) {
+    console.log("Error checking unique username ", error);
     next(error);
   }
 };
