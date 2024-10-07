@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { ApiResponse } from "../types/apiResponse";
 import CustomError from "../utils/customError";
 import { deleteExistingProfilePicture, s3Upload } from "../utils/s3Upload";
-import { updateUserProfilePicture } from "../services/userServices";
+import { updateUser, updateUserProfilePicture } from "../services/userServices";
 import { getProfilePictureById } from "../models/userModel";
+import { userUpdateSchema } from "../validators/userValidators";
 
 export const updateProfilePicture = async (
   req: Request,
@@ -47,6 +48,49 @@ export const updateProfilePicture = async (
     return res.status(200).json(response);
   } catch (error) {
     console.log("Error while updating profile picture: ", error);
+    next(error);
+  }
+};
+
+export const updateUserDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<Response<ApiResponse> | void> => {
+  // zod validation
+  const result = userUpdateSchema.safeParse(req.body);
+
+  if (!result.success) {
+    const response: ApiResponse = {
+      success: false,
+      message: "Validation failed",
+      data: result.error.errors,
+    };
+
+    return res.status(400).json(response);
+  }
+
+  const { username, statusMessage } = result.data;
+  const id = req.user?.id;
+
+  if (!id) {
+    const response: ApiResponse = {
+      success: false,
+      message: "Unautherized request",
+    };
+
+    return res.status(400).json(response);
+  }
+  try {
+    await updateUser(id, username, statusMessage);
+    const response: ApiResponse = {
+      success: true,
+      message: "Updated user details",
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log("Error while updating user details: ", error);
     next(error);
   }
 };

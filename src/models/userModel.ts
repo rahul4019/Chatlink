@@ -130,3 +130,34 @@ export const getProfilePictureById = async (id: string): Promise<string> => {
     throw new CustomError("Could not get user's profile picture", 500);
   }
 };
+
+export const updateUserDetailsById = async (
+  id: string,
+  toUpdate: { username?: string; statusMessage?: string },
+): Promise<void> => {
+  const updates: Array<string> = [];
+
+  if (toUpdate.username) {
+    updates.push(`username = '${toUpdate.username}'`);
+  }
+
+  if (toUpdate.statusMessage) {
+    updates.push(`status_message = '${toUpdate.statusMessage}'`);
+  }
+
+  const subQuery = updates.join(", ");
+
+  const updateUserDetailsQuery = `
+    UPDATE users
+    SET ${subQuery} 
+    WHERE id = $1;
+  `;
+
+  console.log("QUERY: ", updateUserDetailsQuery);
+  try {
+    await query(updateUserDetailsQuery, [id]);
+  } catch (error) {
+    console.log("Error updating user details", error);
+    throw new CustomError("Could not update user's details", 500);
+  }
+};

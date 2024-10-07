@@ -1,5 +1,8 @@
 import express from "express";
-import { updateProfilePicture } from "../controllers/userController";
+import {
+  updateProfilePicture,
+  updateUserDetails,
+} from "../controllers/userController";
 import { verifyAccessToken } from "../middleware/authMiddleware";
 import { upload } from "../middleware/multer";
 
@@ -12,4 +15,5 @@ router.post(
   updateProfilePicture,
 );
 
+router.put("/update", verifyAccessToken, updateUserDetails);
 export default router;
