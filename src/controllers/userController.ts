@@ -21,7 +21,9 @@ export const updateProfilePicture = async (
       };
       return res.status(400).json(response);
     }
+    // get the url and delete the profile picture from the bucket if user is updating the profile_picture
 
+    
     const fileURL = await s3Upload(req.file);
     await updateUserProfilePicture(req.user.id, fileURL);
 

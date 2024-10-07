@@ -114,3 +114,19 @@ export const updateProfilePicture = async (
     throw new CustomError("Could not update profile picture", 500);
   }
 };
+
+export const getProfilePictureById = async (id: string): Promise<string> => {
+  const getProfilePictureQuery = `
+    SELECT
+    profile_picture 
+    FROM users
+    WHERE id = $1;
+  `;
+  try {
+    const result = await query(getProfilePictureQuery, [id]);
+    return result.rows[0].profile_picture;
+  } catch (error) {
+    console.log("Error getting user's profile picture", error);
+    throw new CustomError("Could not get user's profile picture", 500);
+  }
+};
