@@ -161,3 +161,20 @@ export const updateUserDetailsById = async (
     throw new CustomError("Could not update user's details", 500);
   }
 };
+
+export const userNameExist = async (username: string): Promise<boolean> => {
+  try {
+    const userNameExistQuery = `
+      SELECT COUNT(*) as count
+      FROM users
+      WHERE username = $1;
+    `;
+    const result = await query(userNameExistQuery, [username]);
+
+    const count = Number(result.rows[0].count);
+    return count > 0;
+  } catch (error) {
+    console.log("Error checking unique username", error);
+    throw new CustomError("Could not check unique username", 500);
+  }
+};
