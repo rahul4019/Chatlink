@@ -18,7 +18,6 @@ export const s3Upload = async (file: Express.Multer.File) => {
     Key: `profile_pictures/${file.filename}`, // images will be saved in profile_pictures directory
     Body: fileContent,
     ContentType: file.mimetype,
-    // ACL: "public-read", // Make the file public
   };
 
   // Uploading files to the bucket

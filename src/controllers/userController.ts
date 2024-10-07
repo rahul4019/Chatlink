@@ -33,7 +33,7 @@ export const updateProfilePicture = async (
       },
     };
 
-    return res.status(400).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     console.log("Error while updating profile picture: ", error);
     next(error);
