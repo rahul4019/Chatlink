@@ -2,7 +2,7 @@ import { query } from "../config/db";
 import { User } from "../types/user";
 import CustomError from "../utils/customError";
 
-// creates user table
+// creates users table
 export const createUserTable = async (): Promise<void> => {
   const createUserTableQuery = `
   CREATE TABLE IF NOT EXISTS users (
