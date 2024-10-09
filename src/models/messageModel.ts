@@ -40,3 +40,33 @@ export const insertMessage = async (
     throw new CustomError("Could not insert message", 500);
   }
 };
+
+export const getMessagesBetweenUsers = async (
+  senderId: string,
+  receiverId: string,
+): Promise<Array<Message>> => {
+  try {
+    const getMessagesBetweenUsersQuery = `
+      SELECT 
+        id,
+        sender_id,
+        receiver_id,
+        message_text,
+        sent_at
+      FROM messages
+      WHERE (sender_id = $1 AND receiver_id = $2)
+        OR (sender_id = $2 AND receiver_id = $1)
+      ORDER BY sent_at ASC
+    `;
+
+    const result = await query(getMessagesBetweenUsersQuery, [
+      senderId,
+      receiverId,
+    ]);
+
+    return result.rows;
+  } catch (error) {
+    console.log("Error in getting messages between two users: ", error);
+    throw new CustomError("Could not get messages between two users", 500);
+  }
+};

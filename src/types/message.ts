@@ -4,5 +4,5 @@ export interface Message {
   receiver_id: string;
   message_text: string;
   sent_at: Date;
-  is_deleted: boolean;
+  is_deleted?: boolean;
 }
