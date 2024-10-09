@@ -27,7 +27,7 @@ export const createUser = async (
   email: string,
   password: string,
   username: string,
-): Promise<any> => {
+): Promise<User> => {
   const createUserQuery = `
     INSERT INTO users (email, password, username) 
     VALUES ($1, $2, $3) RETURNING *;  
