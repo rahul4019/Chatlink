@@ -61,18 +61,22 @@ const Home = () => {
             ChatLink
           </Link>
           <div className="space-x-4">
-            <Button
-              variant="secondary"
-              className="bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 hover:scale-105"
-            >
-              Sign up
-            </Button>
-            <Button
-              variant="outline"
-              className="text-gray-500 border-gray-300  transition-all duration-300 hover:scale-105"
-            >
-              Sign in
-            </Button>
+            <Link to="/signup">
+              <Button
+                variant="secondary"
+                className="bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 hover:scale-105"
+              >
+                Sign up
+              </Button>
+            </Link>
+            <Link to='/signin'>
+              <Button
+                variant="outline"
+                className="text-gray-500 border-gray-300  transition-all duration-300 hover:scale-105"
+              >
+                Sign in
+              </Button>
+            </Link>
           </div>
         </nav>
       </header>
