@@ -1,4 +1,5 @@
 import { getMessagesBetweenUsers, insertMessage } from "../models/messageModel";
+import { insertMessageReceipt } from "../models/messageReceiptsModel";
 import { Message } from "../types/message";
 
 export const messageInsertion = async (
@@ -7,6 +8,9 @@ export const messageInsertion = async (
   messageText: string,
 ): Promise<Message> => {
   const message = await insertMessage(senderId, receiverId, messageText);
+
+  const { id, receiver_id, sent_at, is_deleted }: Message = message;
+  await insertMessageReceipt(id, receiver_id, sent_at, is_deleted || false);
   return message;
 };
 
