@@ -51,7 +51,7 @@ const AnimatedElement = ({
 
 const Home = () => {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 text-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 text-gray-100 flex flex-col">
       <header className="bg-gray-800 bg-opacity-50 p-4">
         <nav className="container mx-auto flex items-center justify-between">
           <Link
@@ -107,8 +107,8 @@ const Home = () => {
             <ul className="space-y-4">
               {[
                 { icon: Zap, text: "Lightning-fast messaging" },
-                { icon: Shield, text: "End-to-end encryption" },
-                { icon: Smartphone, text: "Cross-platform support" },
+                { icon: Shield, text: "Stay connected with confidence" },
+                { icon: Smartphone, text: "Access ChatLink anytime, anywhere" },
               ].map((item, index) => (
                 <AnimatedElement
                   key={index}
