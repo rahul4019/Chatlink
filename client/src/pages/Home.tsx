@@ -54,20 +54,22 @@ const AnimatedElement = ({
 const Home = () => {
   return (
     <Layout>
-      <header className="bg-gray-800 bg-opacity-50 p-4">
+      <header className="bg-grimary bg-opacity-50 p-4">
         <nav className="container mx-auto flex items-center justify-between">
           <Link
             to="/"
-            className="text-blue-400 text-2xl font-bold transition-all duration-300 hover:scale-105"
+            className="text-primary text-2xl font-bold transition-all duration-300 hover:scale-105"
           >
             ChatLink
           </Link>
-          <div className="space-x-4">
-            <ModeToggle />
+          <div className="flex space-x-4">
+            <div>
+              <ModeToggle />
+            </div>
             <Link to="/signup">
               <Button
                 variant="secondary"
-                className="bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 hover:scale-105"
+                className="bg-blue-500 text-foreground hover:bg-blue-600 transition-all duration-300 hover:scale-105"
               >
                 Sign up
               </Button>
@@ -75,7 +77,7 @@ const Home = () => {
             <Link to="/signin">
               <Button
                 variant="outline"
-                className="text-gray-500 border-gray-300  transition-all duration-300 hover:scale-105"
+                className="text-foreground border-gray-300  transition-all duration-300 hover:scale-105"
               >
                 Sign in
               </Button>
@@ -87,12 +89,12 @@ const Home = () => {
       <main className="flex-grow container mx-auto px-4 py-16 flex flex-col justify-center items-center">
         <section className="text-center mb-8 max-w-4xl">
           <AnimatedElement>
-            <h1 className="text-5xl md:text-6xl font-bold text-blue-400 mb-6">
+            <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6">
               Connect Instantly with ChatLink
             </h1>
           </AnimatedElement>
           <AnimatedElement className="delay-300">
-            <p className="text-xl text-gray-300 mb-8">
+            <p className="text-xl text-foreground mb-8">
               Experience seamless communication with our lightning-fast, secure,
               and feature-rich chat application.
             </p>
@@ -100,14 +102,14 @@ const Home = () => {
         </section>
 
         <section className="grid md:grid-cols-2 gap-8 items-center max-w-4xl w-full">
-          <AnimatedElement className="bg-gray-800 bg-opacity-50 rounded-2xl p-8 shadow-xl">
+          <AnimatedElement className="bg-background bg-opacity-50 rounded-2xl p-8 shadow-xl">
             <div className="w-full h-64 bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl shadow-inner flex items-center justify-center">
-              <MessageCircle size={100} className="text-white" />
+              <MessageCircle size={100} className="animate-pulse text-white" />
             </div>
           </AnimatedElement>
           <div className="space-y-6">
             <AnimatedElement>
-              <h2 className="text-3xl font-bold text-blue-400">
+              <h2 className="text-3xl font-bold text-primary">
                 Why Choose ChatLink?
               </h2>
             </AnimatedElement>
@@ -121,8 +123,8 @@ const Home = () => {
                   key={index}
                   className={`delay-${(index + 1) * 200}`}
                 >
-                  <li className="flex items-center space-x-3 text-gray-300">
-                    <item.icon className="flex-shrink-0 w-6 h-6 text-blue-400" />
+                  <li className="flex items-center space-x-3 text-foreground">
+                    <item.icon className="flex-shrink-0 w-6 h-6 text-primary" />
                     <span>{item.text}</span>
                   </li>
                 </AnimatedElement>
@@ -133,20 +135,22 @@ const Home = () => {
 
         <section className="mt-16 text-center max-w-4xl">
           <AnimatedElement>
-            <h2 className="text-3xl font-bold text-blue-400 mb-8">
+            <h2 className="text-3xl font-bold text-primary mb-8">
               Ready to get started?
             </h2>
           </AnimatedElement>
           <AnimatedElement className="delay-300">
-            <Button className="bg-blue-500 text-white hover:bg-blue-600 text-lg px-8 py-3 transition-all duration-300 hover:scale-105">
-              Join ChatLink Today
-            </Button>
+            <Link to="/signup">
+              <Button className="bg-blue-500 text-white hover:bg-blue-600 text-lg px-8 py-3 transition-all duration-300 hover:scale-105">
+                Join ChatLink Today
+              </Button>
+            </Link>
           </AnimatedElement>
         </section>
       </main>
 
-      <footer className="mt-auto py-8 bg-gray-800 bg-opacity-50">
-        <div className="container mx-auto px-4 text-center text-gray-400">
+      <footer className="mt-auto py-8">
+        <div className="container mx-auto px-4 text-center text-secondary-foreground">
           <p>&copy; 2024 ChatLink. All rights reserved.</p>
         </div>
       </footer>
