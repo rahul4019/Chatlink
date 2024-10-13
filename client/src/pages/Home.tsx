@@ -2,6 +2,8 @@ import { useEffect, useState, useRef, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Zap, Shield, Smartphone } from "lucide-react";
 import { Link } from "react-router-dom";
+import Layout from "@/components/Layout";
+import { ModeToggle } from "@/components/mode-toggle";
 
 type AnimatedElementProps = {
   children: ReactNode;
@@ -51,7 +53,7 @@ const AnimatedElement = ({
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 text-gray-100 flex flex-col">
+    <Layout>
       <header className="bg-gray-800 bg-opacity-50 p-4">
         <nav className="container mx-auto flex items-center justify-between">
           <Link
@@ -61,6 +63,7 @@ const Home = () => {
             ChatLink
           </Link>
           <div className="space-x-4">
+            <ModeToggle />
             <Link to="/signup">
               <Button
                 variant="secondary"
@@ -69,7 +72,7 @@ const Home = () => {
                 Sign up
               </Button>
             </Link>
-            <Link to='/signin'>
+            <Link to="/signin">
               <Button
                 variant="outline"
                 className="text-gray-500 border-gray-300  transition-all duration-300 hover:scale-105"
@@ -147,7 +150,7 @@ const Home = () => {
           <p>&copy; 2024 ChatLink. All rights reserved.</p>
         </div>
       </footer>
-    </div>
+    </Layout>
   );
 };
 
