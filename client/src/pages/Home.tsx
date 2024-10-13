@@ -69,7 +69,7 @@ const Home = () => {
             <Link to="/signup">
               <Button
                 variant="secondary"
-                className="bg-blue-500 text-foreground hover:bg-blue-600 transition-all duration-300 hover:scale-105"
+                className="bg-primary text-foreground transition-all duration-300 hover:scale-105"
               >
                 Sign up
               </Button>

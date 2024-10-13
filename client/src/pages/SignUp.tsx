@@ -1,25 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Link } from "react-router-dom";
 import { Zap, Shield, Smartphone } from "lucide-react";
 import Layout from "@/components/Layout";
+import SignUpForm from "@/components/SignUpForm";
 
 export default function SignupPage() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted");
-  };
-
   return (
     <Layout>
       <div className="flex justify-center items-center min-h-screen">
@@ -51,102 +34,7 @@ export default function SignupPage() {
             </div>
 
             {/* Right side form */}
-            <div className="flex-1 bg-background p-8 md:p-12">
-              <Card className="w-full max-w-md mx-auto bg-card shadow">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-bold text-primary">
-                    Sign Up
-                  </CardTitle>
-                  <CardDescription className="text-secondary-foreground">
-                    Create your account to get started
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="username"
-                        className="text-secondary-foreground"
-                      >
-                        Username
-                      </Label>
-                      <Input
-                        id="username"
-                        name="username"
-                        placeholder="Enter your username"
-                        required
-                        className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="email"
-                        className="text-secondary-foreground"
-                      >
-                        Email
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        required
-                        className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="password"
-                        className="text-secondary-foreground"
-                      >
-                        Password
-                      </Label>
-                      <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder="Enter your password"
-                        required
-                        className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="confirmPassword"
-                        className="text-secondary-foreground"
-                      >
-                        Confirm Password
-                      </Label>
-                      <Input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type="password"
-                        placeholder="Confirm your password"
-                        required
-                        className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      Sign Up
-                    </Button>
-                  </form>
-                </CardContent>
-                <CardFooter>
-                  <p className="text-sm text-center text-secondary-foreground w-full">
-                    Already have an account?{" "}
-                    <Link
-                      to="/signin"
-                      className="font-medium text-primary hover:underline"
-                    >
-                      Sign In
-                    </Link>
-                  </p>
-                </CardFooter>
-              </Card>
-            </div>
+            <SignUpForm />
           </div>
         </div>
       </div>
