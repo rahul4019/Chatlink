@@ -23,11 +23,11 @@ export default function SignupPage() {
   return (
     <Layout>
       <div className="flex justify-center items-center min-h-screen">
-        <div className="max-w-6xl w-full bg-gray-800 bg-opacity-50 rounded-lg shadow-lg overflow-hidden">
+        <div className="max-w-6xl w-full bg-secondary bg-opacity-50 rounded-lg shadow-lg overflow-hidden">
           <div className="flex flex-col md:flex-row">
             {/* Left side content */}
             <div className="flex-1 p-8 md:p-12">
-              <h1 className="text-3xl md:text-4xl font-bold text-blue-400 mb-6">
+              <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6">
                 Welcome to ChatLink
               </h1>
               <p className="text-lg md:text-xl mb-8">
@@ -51,20 +51,23 @@ export default function SignupPage() {
             </div>
 
             {/* Right side form */}
-            <div className="flex-1 bg-gray-900 p-8 md:p-12">
-              <Card className="w-full max-w-md mx-auto bg-gray-800 border-gray-700">
+            <div className="flex-1 bg-background p-8 md:p-12">
+              <Card className="w-full max-w-md mx-auto bg-card shadow">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold text-blue-400">
+                  <CardTitle className="text-2xl font-bold text-primary">
                     Sign Up
                   </CardTitle>
-                  <CardDescription className="text-gray-400">
+                  <CardDescription className="text-secondary-foreground">
                     Create your account to get started
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="username" className="text-gray-200">
+                      <Label
+                        htmlFor="username"
+                        className="text-secondary-foreground"
+                      >
                         Username
                       </Label>
                       <Input
@@ -72,11 +75,14 @@ export default function SignupPage() {
                         name="username"
                         placeholder="Enter your username"
                         required
-                        className="bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
+                        className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-gray-200">
+                      <Label
+                        htmlFor="email"
+                        className="text-secondary-foreground"
+                      >
                         Email
                       </Label>
                       <Input
@@ -85,11 +91,14 @@ export default function SignupPage() {
                         type="email"
                         placeholder="Enter your email"
                         required
-                        className="bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
+                        className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="password" className="text-gray-200">
+                      <Label
+                        htmlFor="password"
+                        className="text-secondary-foreground"
+                      >
                         Password
                       </Label>
                       <Input
@@ -98,13 +107,13 @@ export default function SignupPage() {
                         type="password"
                         placeholder="Enter your password"
                         required
-                        className="bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
+                        className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label
                         htmlFor="confirmPassword"
-                        className="text-gray-200"
+                        className="text-secondary-foreground"
                       >
                         Confirm Password
                       </Label>
@@ -114,7 +123,7 @@ export default function SignupPage() {
                         type="password"
                         placeholder="Confirm your password"
                         required
-                        className="bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
+                        className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                       />
                     </div>
                     <Button
@@ -126,13 +135,13 @@ export default function SignupPage() {
                   </form>
                 </CardContent>
                 <CardFooter>
-                  <p className="text-sm text-center text-gray-400 w-full">
+                  <p className="text-sm text-center text-secondary-foreground w-full">
                     Already have an account?{" "}
                     <Link
                       to="/signin"
-                      className="font-medium text-blue-400 hover:underline"
+                      className="font-medium text-primary hover:underline"
                     >
-                      Sign in{" "}
+                      Sign In
                     </Link>
                   </p>
                 </CardFooter>
