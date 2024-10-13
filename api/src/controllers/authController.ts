@@ -76,7 +76,7 @@ export const userLogin = async (
     const accessTokenExpiry = 15 * 60 * 1000; // 15 minutes
     const refreshTokenexpiry = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-    const tokens: Tokens = await loginUser(email, password);
+    const { tokens, user } = await loginUser(email, password);
 
     //  set cookies
     res.cookie("accessToken", tokens.accessToken, {
@@ -92,6 +92,9 @@ export const userLogin = async (
     const response: ApiResponse = {
       success: true,
       message: "User logged In",
+      data: {
+        user,
+      },
     };
 
     res.status(200).json(response);

@@ -55,7 +55,10 @@ export const registerUser = async (
 export const loginUser = async (
   email: string,
   password: string,
-): Promise<Tokens> => {
+): Promise<{
+  tokens: Tokens;
+  user: Omit<User, "password">;
+}> => {
   const userDetails: User = await getUserDetails(email);
 
   // check if user exist
@@ -72,8 +75,15 @@ export const loginUser = async (
   );
 
   if (!isPasswordCorrect) {
-    throw new CustomError("Incorrect Password", 401);
+    throw new CustomError("Incorrect Email Password", 401);
   }
+
+  const {
+    password: userPassword,
+    created_at,
+    updated_at,
+    ...userWithoutSensitiveData
+  } = userDetails;
 
   const accessToken = generateAccessToken(userDetails.id);
   const refreshToken = generateRefreshToken(userDetails.id);
@@ -83,7 +93,7 @@ export const loginUser = async (
     refreshToken,
   };
 
-  return tokens;
+  return { tokens, user: userWithoutSensitiveData };
 };
 
 export const refreshAccessToken = async (
