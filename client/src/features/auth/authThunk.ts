@@ -14,7 +14,7 @@ export const loginUser = createAsyncThunk(
         email,
         password,
       });
-      const { user } = response.data;
+      const { user } = response.data.data;
       dispatch(loginSuccess(user));
     } catch (error: any) {
       dispatch(loginFailure(error.response?.data?.message || "Login failed"));

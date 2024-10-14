@@ -1,19 +1,19 @@
 import { useAppSelector } from "@/app/hooks";
 import { Navigate } from "react-router-dom";
 
-type ProtectedRoutesProps = {
+type PublicRouteProps = {
   children: JSX.Element;
 };
 
-const ProtectedRoutes: React.FC<ProtectedRoutesProps> = ({ children }) => {
+const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   // check if the user is authenticated or not
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
-  if (!isAuthenticated) {
-    return <Navigate to="/signin" />;
+  if (isAuthenticated) {
+    return <Navigate to="/chat" />;
   }
 
   return children;
 };
 
-export default ProtectedRoutes;
+export default PublicRoute;
