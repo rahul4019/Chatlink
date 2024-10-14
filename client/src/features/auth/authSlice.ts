@@ -11,12 +11,14 @@ interface User {
 }
 
 interface AuthState {
+  isAuthenticated: boolean;
   user: null | User;
   loading: boolean;
   error: null | string;
 }
 
 const initialState: AuthState = {
+  isAuthenticated: false,
   user: null,
   loading: false,
   error: null,
@@ -31,6 +33,7 @@ const authSlice = createSlice({
       state.error = null;
     },
     loginSuccess(state, action: PayloadAction<User>) {
+      state.isAuthenticated = true;
       state.loading = false;
       state.user = action.payload;
     },
