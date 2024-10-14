@@ -15,6 +15,7 @@ export const loginUser = createAsyncThunk(
         password,
       });
       const { user } = response.data.data;
+      localStorage.setItem("user", JSON.stringify(user));
       dispatch(loginSuccess(user));
     } catch (error: any) {
       dispatch(loginFailure(error.response?.data?.message || "Login failed"));

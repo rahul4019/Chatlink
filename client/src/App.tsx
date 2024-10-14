@@ -7,8 +7,21 @@ import { ThemeProvider } from "./components/theme-provider";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Chat from "./pages/Chat";
 import PublicRoute from "./utils/PublicRoute";
+import { useAppDispatch } from "./app/hooks";
+import { setUser } from "./features/auth/authSlice";
+import { useEffect } from "react";
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+
+    if (user) {
+      dispatch(setUser(JSON.parse(user)));
+    }
+  }, []);
+
   return (
     <ThemeProvider>
       <Routes>
