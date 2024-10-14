@@ -21,8 +21,12 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import { useAppDispatch } from "@/app/hooks";
+import { loginUser } from "@/features/auth/authThunk";
 
 const SignInForm = () => {
+  const dispatch = useAppDispatch();
+
   const form = useForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -33,6 +37,8 @@ const SignInForm = () => {
 
   const onSubmit = (data: z.infer<typeof signInSchema>) => {
     console.log(data);
+    const { email, password } = data;
+    dispatch(loginUser({ email, password }));
   };
 
   return (

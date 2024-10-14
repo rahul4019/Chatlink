@@ -3,14 +3,20 @@ import { query } from "./config/db";
 import { ApiResponse } from "./types/apiResponse";
 import routes from "./routes";
 import errorHandler from "./middleware/errorHandler";
-import requestIp from "request-ip";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(requestIp.mw());
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }),
+);
 
 app.get("/", (_: Request, res: Response) => {
   const response: ApiResponse = {
