@@ -5,7 +5,7 @@ type PublicRouteProps = {
   children: JSX.Element;
 };
 
-const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
+const PublicRoute = ({ children }: PublicRouteProps) => {
   // check if the user is authenticated or not
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 

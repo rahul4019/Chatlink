@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { showCustomToast } from "./CustomToast";
 import {
   Card,
   CardHeader,
@@ -21,11 +22,11 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { LoaderCircle } from "lucide-react";
+import {} from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { signupUser } from "@/features/auth/authThunk";
 
-const SignUpForm: React.FC = () => {
+const SignUpForm = () => {
   const dispatch = useAppDispatch();
 
   const form = useForm({
@@ -43,7 +44,7 @@ const SignUpForm: React.FC = () => {
   const onSubmit = (data: z.infer<typeof signUpSchema>) => {
     console.log(data);
     const { username, email, password } = data;
-    dispatch(signupUser({ username, email, password }));
+    // dispatch(signupUser({ username, email, password }));
   };
 
   return (
@@ -132,6 +133,12 @@ const SignUpForm: React.FC = () => {
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 disabled={loading}
+                onClick={() =>
+                  showCustomToast({
+                    content: "Account has been created",
+                    variant: "success",
+                  })
+                }
               >
                 {loading && (
                   <LoaderCircle

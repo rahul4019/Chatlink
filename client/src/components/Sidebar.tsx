@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ import { useAppDispatch } from "@/app/hooks";
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
 };
-const Sidebar: React.FC<SidebarProps> = ({ setSidebarOpen }) => {
+const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");

@@ -25,7 +25,7 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { loginUser } from "@/features/auth/authThunk";
 import { LoaderCircle } from "lucide-react";
 
-const SignInForm: React.FC = () => {
+const SignInForm = () => {
   const dispatch = useAppDispatch();
 
   const form = useForm({
