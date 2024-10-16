@@ -1,48 +1,21 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MenuIcon, SendIcon, X, Search } from "lucide-react";
+import { MenuIcon, SendIcon } from "lucide-react";
+import Sidebar from "@/components/Sidebar";
 
 export default function Chat() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [messages, setMessages] = useState([
     { id: 1, text: "Hey there!", sent: false },
     { id: 2, text: "Hi! How are you?", sent: true },
     { id: 3, text: "I'm doing great, thanks for asking!", sent: false },
     { id: 4, text: "That's wonderful to hear!", sent: true },
     { id: 5, text: "Do you have any plans for the weekend?", sent: false },
-  ]);
-
-  const [chats] = useState([
-    { id: 1, name: "John Doe", lastMessage: "See you tomorrow!" },
-    { id: 2, name: "Jane Smith", lastMessage: "Thanks for your help." },
-    { id: 3, name: "Bob Johnson", lastMessage: "How's the project going?" },
-    { id: 4, name: "Alice Brown", lastMessage: "Let's schedule a meeting." },
-    { id: 5, name: "Charlie Davis", lastMessage: "I've sent the files." },
-    { id: 6, name: "Eva Wilson", lastMessage: "Can you review this?" },
-    {
-      id: 7,
-      name: "Frank Miller",
-      lastMessage: "Great job on the presentation!",
-    },
-    {
-      id: 8,
-      name: "Grace Lee",
-      lastMessage: "Don't forget about the deadline.",
-    },
-    { id: 9, name: "Henry Taylor", lastMessage: "I'll get back to you soon." },
-    { id: 10, name: "Ivy Clark", lastMessage: "Let's catch up sometime." },
-    { id: 11, name: "John Doe", lastMessage: "See you tomorrow!" },
-    { id: 12, name: "Jane Smith", lastMessage: "Thanks for your help." },
-    { id: 13, name: "Bob Johnson", lastMessage: "How's the project going?" },
-    { id: 14, name: "Alice Brown", lastMessage: "Let's schedule a meeting." },
-    { id: 15, name: "Charlie Davis", lastMessage: "I've sent the files." },
   ]);
 
   useEffect(() => {
@@ -57,67 +30,6 @@ export default function Chat() {
     setMessages([...messages, newMessage]);
   };
 
-  const filteredChats = chats.filter(
-    (chat) =>
-      chat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      chat.lastMessage.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
-
-  const SidebarContent = () => (
-    <>
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <h1 className="text-xl font-semibold">Chats</h1>
-        {isMobile && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        )}
-      </div>
-      <div className="p-4">
-        <div className="relative">
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search chats..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8"
-          />
-        </div>
-      </div>
-      <ScrollArea className="h-[calc(100vh-128px)]">
-        {filteredChats.map((chat) => (
-          <motion.div
-            key={chat.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: chat.id * 0.1 }}
-            className="flex items-center gap-3 p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer"
-          >
-            <Avatar>
-              <AvatarFallback>
-                {chat.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h3 className="font-medium">{chat.name}</h3>
-              <p className="text-sm text-muted-foreground">
-                {chat.lastMessage}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </ScrollArea>
-    </>
-  );
-
   return (
     <div className="max-w-screen-2xl w-screen mx-auto">
       <div className="flex h-screen bg-background">
@@ -129,7 +41,7 @@ export default function Chat() {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="w-64 bg-card border-r border-border"
           >
-            <SidebarContent />
+            <Sidebar setSidebarOpen={setSidebarOpen} />
           </motion.div>
         )}
 
@@ -143,7 +55,7 @@ export default function Chat() {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border"
             >
-              <SidebarContent />
+              <Sidebar setSidebarOpen={setSidebarOpen} />
             </motion.div>
           )}
         </AnimatePresence>
