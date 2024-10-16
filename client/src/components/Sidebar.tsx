@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logoutUser } from "@/features/auth/authThunk";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useAppDispatch } from "@/app/hooks";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
@@ -23,8 +23,6 @@ const Sidebar: React.FC<SidebarProps> = ({ setSidebarOpen }) => {
   const dispatch = useAppDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const { loading, error } = useAppSelector((state) => state.auth);
 
   const [chats] = useState([
     { id: 1, name: "John Doe", lastMessage: "See you tomorrow!" },

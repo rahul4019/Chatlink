@@ -21,8 +21,13 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import { LoaderCircle } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { signupUser } from "@/features/auth/authThunk";
 
 const SignUpForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const form = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -33,8 +38,12 @@ const SignUpForm: React.FC = () => {
     },
   });
 
+  const { loading, error } = useAppSelector((state) => state.auth);
+
   const onSubmit = (data: z.infer<typeof signUpSchema>) => {
     console.log(data);
+    const { username, email, password } = data;
+    dispatch(signupUser({ username, email, password }));
   };
 
   return (
@@ -122,7 +131,15 @@ const SignUpForm: React.FC = () => {
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={loading}
               >
+                {loading && (
+                  <LoaderCircle
+                    size={16}
+                    strokeWidth={4}
+                    className="animate-spin mr-2"
+                  />
+                )}
                 Sign Up
               </Button>
             </form>

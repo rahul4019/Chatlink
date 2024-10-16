@@ -7,19 +7,42 @@ import {
   logoutFailure,
   logoutStart,
   logoutSuccess,
+  signupFailure,
+  signupStart,
+  signupSuccess,
 } from "./authSlice";
+
+interface signupArgs {
+  username: string;
+  email: string;
+  password: string;
+}
 
 interface loginArgs {
   email: string;
   password: string;
 }
 
+export const signupUser = createAsyncThunk<void, signupArgs>(
+  "auth/signup",
+  async ({ username, email, password }: signupArgs, { dispatch }) => {
+    dispatch(signupStart());
+    try {
+      await axiosInstance.post("/auth/register", {
+        username,
+        email,
+        password,
+      });
+      dispatch(signupSuccess());
+    } catch (error: any) {
+      dispatch(signupFailure(error.response?.data?.message || "Signup failed"));
+    }
+  },
+);
+
 export const loginUser = createAsyncThunk<void, loginArgs>(
   "auth/login",
-  async (
-    { email, password }: { email: string; password: string },
-    { dispatch },
-  ) => {
+  async ({ email, password }: loginArgs, { dispatch }) => {
     dispatch(loginStart());
     try {
       const response = await axiosInstance.post("/auth/login", {

@@ -28,6 +28,16 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    signupStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    signupSuccess(state) {
+      state.loading = false;
+    },
+    signupFailure(state, action: PayloadAction<string>) {
+      state.error = action.payload;
+    },
     loginStart(state) {
       state.loading = true;
       state.error = null;
@@ -62,6 +72,9 @@ const authSlice = createSlice({
 });
 
 export const {
+  signupStart,
+  signupSuccess,
+  signupFailure,
   loginStart,
   loginSuccess,
   loginFailure,
