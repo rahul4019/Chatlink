@@ -21,8 +21,9 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { useAppDispatch } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { loginUser } from "@/features/auth/authThunk";
+import { LoaderCircle } from "lucide-react";
 
 const SignInForm = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +35,8 @@ const SignInForm = () => {
       password: "",
     },
   });
+
+  const { loading } = useAppSelector((state) => state.auth);
 
   const onSubmit = (data: z.infer<typeof signInSchema>) => {
     console.log(data);
@@ -92,7 +95,15 @@ const SignInForm = () => {
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={loading}
               >
+                {loading && (
+                  <LoaderCircle
+                    size={16}
+                    strokeWidth={4}
+                    className="animate-spin mr-2"
+                  />
+                )}
                 Sign In
               </Button>
             </form>
