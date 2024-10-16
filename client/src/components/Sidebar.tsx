@@ -4,14 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { X, Search } from "lucide-react";
+import { X, Search, EllipsisVertical } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { logoutUser } from "@/features/auth/authThunk";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
 };
 const Sidebar: React.FC<SidebarProps> = ({ setSidebarOpen }) => {
+  const dispatch = useAppDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   const [chats] = useState([
     { id: 1, name: "John Doe", lastMessage: "See you tomorrow!" },
@@ -55,6 +68,26 @@ const Sidebar: React.FC<SidebarProps> = ({ setSidebarOpen }) => {
     <div>
       <div className="flex items-center justify-between p-4 border-b border-border">
         <h1 className="text-xl font-semibold">Chats</h1>
+        <div></div>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <EllipsisVertical size={16} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="cursor-pointer">
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => dispatch(logoutUser())}
+            >
+              Log Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         {isMobile && (
           <Button
             variant="ghost"

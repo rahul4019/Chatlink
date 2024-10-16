@@ -22,7 +22,7 @@ import {
   FormMessage,
 } from "./ui/form";
 
-const SignUpForm = () => {
+const SignUpForm: React.FC = () => {
   const form = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
