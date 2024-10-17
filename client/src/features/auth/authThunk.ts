@@ -10,8 +10,9 @@ import {
   signupFailure,
   signupStart,
   signupSuccess,
+  usernameCheckStart,
+  usernameCheckSuccess,
 } from "./authSlice";
-import { showCustomToast } from "@/components/CustomToast";
 
 interface SignupArgs {
   username: string;
@@ -23,6 +24,28 @@ interface LoginArgs {
   email: string;
   password: string;
 }
+
+export const checkUsernameAvailability = createAsyncThunk<
+  void,
+  string,
+  { rejectValue: string }
+>(
+  "auth/checkUsernameAvailability",
+  async (username: string, { dispatch, rejectWithValue }) => {
+    dispatch(usernameCheckStart());
+    try {
+      const response = await axiosInstance.get(
+        `/user/unique-username?username=${username}`,
+      );
+      console.log(response);
+      dispatch(usernameCheckSuccess());
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Signup failed";
+      dispatch(signupFailure(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
 
 export const signupUser = createAsyncThunk<
   void,

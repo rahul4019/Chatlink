@@ -105,7 +105,7 @@ export const isUsernameUnique = async (
   next: NextFunction,
 ): Promise<Response<ApiResponse> | void> => {
   try {
-    const { username } = req.body;
+    const username = req.query.username as string
 
     if (!username) {
       const response: ApiResponse = {

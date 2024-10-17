@@ -16,14 +16,18 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { LoaderCircle } from "lucide-react";
+import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { signupUser } from "@/features/auth/authThunk";
+import {
+  checkUsernameAvailability,
+  signupUser,
+} from "@/features/auth/authThunk";
 import { showCustomToast } from "./CustomToast";
 
 const SignUpForm = () => {
@@ -40,9 +44,13 @@ const SignUpForm = () => {
     },
   });
 
-  const { loading, error: errorMessage } = useAppSelector(
-    (state) => state.auth,
-  );
+  const {
+    loading,
+    error: err,
+    isUsernameAvailable,
+    usernameError,
+    loadingUsername,
+  } = useAppSelector((state) => state.auth);
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     try {
@@ -51,15 +59,24 @@ const SignUpForm = () => {
         signupUser({ username, email, password }),
       );
       if (signupUser.fulfilled.match(resultAction)) {
+        showCustomToast({
+          content: "Account has been created",
+          variant: "success",
+        });
+        navigate("/signin");
       } else if (signupUser.rejected.match(resultAction)) {
         throw new Error(resultAction.error.message || "Signup failed");
       }
     } catch (error: any) {
       showCustomToast({
-        content: errorMessage || "Signup failed",
+        content: err || "Signup failed",
         variant: "error",
       });
     }
+  };
+
+  const handleCheckUsername = async (username: string) => {
+    dispatch(checkUsernameAvailability(username));
   };
 
   return (
@@ -87,8 +104,31 @@ const SignUpForm = () => {
                         placeholder="Enter your username"
                         className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                         {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleCheckUsername(e.target.value);
+                        }}
                       />
                     </FormControl>
+                    <FormDescription>
+                      {loadingUsername ? (
+                        <span className="flex items-center gap-2">
+                          <LoaderCircle className="animate-spin" size={16} />{" "}
+                          checking for availability
+                        </span>
+                      ) : !loadingUsername && isUsernameAvailable ? (
+                        <span className="text-green-500 flex gap-2 items-center">
+                          <CircleCheck size={16} /> username available
+                        </span>
+                      ) : (
+                        !loadingUsername &&
+                        !usernameError && (
+                          <span className="text-red-500 flex gap-2 items-center">
+                            <CircleX size={16} /> username already taken
+                          </span>
+                        )
+                      )}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -104,6 +144,7 @@ const SignUpForm = () => {
                         placeholder="Enter your email"
                         className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                         {...field}
+                        type="password"
                       />
                     </FormControl>
                     <FormMessage />
@@ -121,6 +162,7 @@ const SignUpForm = () => {
                         placeholder="Enter your password"
                         className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                         {...field}
+                        type="password"
                       />
                     </FormControl>
                     <FormMessage />

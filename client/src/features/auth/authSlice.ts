@@ -15,6 +15,9 @@ interface AuthState {
   user: null | User;
   loading: boolean;
   error: null | string;
+  isUsernameAvailable: boolean;
+  usernameError: null | string;
+  loadingUsername: boolean;
 }
 
 const initialState: AuthState = {
@@ -22,6 +25,9 @@ const initialState: AuthState = {
   user: null,
   loading: false,
   error: null,
+  isUsernameAvailable: false,
+  usernameError: null,
+  loadingUsername: false,
 };
 
 const authSlice = createSlice({
@@ -69,6 +75,19 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    usernameCheckStart(state) {
+      state.loadingUsername = true;
+      state.usernameError = null;
+    },
+    usernameCheckSuccess(state) {
+      state.loadingUsername = false;
+      state.isUsernameAvailable = true;
+    },
+    usernameCheckFailure(state, action: PayloadAction<string>) {
+      state.loadingUsername = false;
+      state.usernameError = action.payload;
+      state.isUsernameAvailable = false;
+    },
   },
 });
 
@@ -83,6 +102,9 @@ export const {
   logoutStart,
   logoutSuccess,
   logoutFailure,
+  usernameCheckStart,
+  usernameCheckSuccess,
+  usernameCheckFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;
