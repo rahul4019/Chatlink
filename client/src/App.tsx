@@ -9,6 +9,7 @@ import PublicRoute from "./utils/PublicRoute";
 import { useAppDispatch } from "./app/hooks";
 import { setUser } from "./features/auth/authSlice";
 import { useEffect } from "react";
+import { Toaster } from "sonner";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <ThemeProvider>
+      <Toaster position="top-center" />
       <Routes>
         <Route path="/" element={<PublicRoute>{<Home />}</PublicRoute>} />
         <Route

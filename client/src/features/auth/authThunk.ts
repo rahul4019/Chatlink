@@ -11,21 +11,29 @@ import {
   signupStart,
   signupSuccess,
 } from "./authSlice";
+import { showCustomToast } from "@/components/CustomToast";
 
-interface signupArgs {
+interface SignupArgs {
   username: string;
   email: string;
   password: string;
 }
 
-interface loginArgs {
+interface LoginArgs {
   email: string;
   password: string;
 }
 
-export const signupUser = createAsyncThunk<void, signupArgs>(
+export const signupUser = createAsyncThunk<
+  void,
+  SignupArgs,
+  { rejectValue: string }
+>(
   "auth/signup",
-  async ({ username, email, password }: signupArgs, { dispatch }) => {
+  async (
+    { username, email, password }: SignupArgs,
+    { dispatch, rejectWithValue },
+  ) => {
     dispatch(signupStart());
     try {
       await axiosInstance.post("/auth/register", {
@@ -35,14 +43,16 @@ export const signupUser = createAsyncThunk<void, signupArgs>(
       });
       dispatch(signupSuccess());
     } catch (error: any) {
-      dispatch(signupFailure(error.response?.data?.message || "Signup failed"));
+      const errorMessage = error.response?.data?.message || "Signup failed";
+      dispatch(signupFailure(errorMessage));
+      return rejectWithValue(errorMessage);
     }
   },
 );
 
-export const loginUser = createAsyncThunk<void, loginArgs>(
+export const loginUser = createAsyncThunk<void, LoginArgs>(
   "auth/login",
-  async ({ email, password }: loginArgs, { dispatch }) => {
+  async ({ email, password }: LoginArgs, { dispatch }) => {
     dispatch(loginStart());
     try {
       const response = await axiosInstance.post("/auth/login", {

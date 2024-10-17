@@ -36,6 +36,7 @@ const authSlice = createSlice({
       state.loading = false;
     },
     signupFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
       state.error = action.payload;
     },
     loginStart(state) {

@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { showCustomToast } from "./CustomToast";
 import {
   Card,
   CardHeader,
@@ -9,7 +8,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema } from "@/schemas/signUpSchema";
@@ -22,12 +21,14 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import {} from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { signupUser } from "@/features/auth/authThunk";
+import { showCustomToast } from "./CustomToast";
 
 const SignUpForm = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const form = useForm({
     resolver: zodResolver(signUpSchema),
@@ -39,12 +40,26 @@ const SignUpForm = () => {
     },
   });
 
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading, error: errorMessage } = useAppSelector(
+    (state) => state.auth,
+  );
 
-  const onSubmit = (data: z.infer<typeof signUpSchema>) => {
-    console.log(data);
-    const { username, email, password } = data;
-    // dispatch(signupUser({ username, email, password }));
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
+    try {
+      const { username, email, password } = data;
+      const resultAction = await dispatch(
+        signupUser({ username, email, password }),
+      );
+      if (signupUser.fulfilled.match(resultAction)) {
+      } else if (signupUser.rejected.match(resultAction)) {
+        throw new Error(resultAction.error.message || "Signup failed");
+      }
+    } catch (error: any) {
+      showCustomToast({
+        content: errorMessage || "Signup failed",
+        variant: "error",
+      });
+    }
   };
 
   return (
@@ -133,12 +148,6 @@ const SignUpForm = () => {
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 disabled={loading}
-                onClick={() =>
-                  showCustomToast({
-                    content: "Account has been created",
-                    variant: "success",
-                  })
-                }
               >
                 {loading && (
                   <LoaderCircle
