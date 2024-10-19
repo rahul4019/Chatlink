@@ -76,7 +76,7 @@ export const signupUser = createAsyncThunk<
 
 export const loginUser = createAsyncThunk<void, LoginArgs>(
   "auth/login",
-  async ({ email, password }: LoginArgs, { dispatch }) => {
+  async ({ email, password }: LoginArgs, { dispatch, rejectWithValue }) => {
     dispatch(loginStart());
     try {
       const response = await axiosInstance.post("/auth/login", {
@@ -87,7 +87,9 @@ export const loginUser = createAsyncThunk<void, LoginArgs>(
       localStorage.setItem("user", JSON.stringify(user));
       dispatch(loginSuccess(user));
     } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Signup failed";
       dispatch(loginFailure(error.response?.data?.message || "Login failed"));
+      return rejectWithValue(errorMessage);
     }
   },
 );

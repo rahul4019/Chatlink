@@ -46,7 +46,7 @@ const SignUpForm = () => {
 
   const {
     loading,
-    error: err,
+    error: signupError,
     isUsernameAvailable,
     usernameError,
     loadingUsername,
@@ -69,7 +69,7 @@ const SignUpForm = () => {
       }
     } catch (error: any) {
       showCustomToast({
-        content: err || "Signup failed",
+        content: signupError || "Signup failed",
         variant: "error",
       });
     }

@@ -24,6 +24,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { loginUser } from "@/features/auth/authThunk";
 import { LoaderCircle } from "lucide-react";
+import { showCustomToast } from "./CustomToast";
 
 const SignInForm = () => {
   const dispatch = useAppDispatch();
@@ -36,12 +37,22 @@ const SignInForm = () => {
     },
   });
 
-  const { loading } = useAppSelector((state) => state.auth);
+  const { loading, error: loginError } = useAppSelector((state) => state.auth);
 
-  const onSubmit = (data: z.infer<typeof signInSchema>) => {
-    console.log(data);
-    const { email, password } = data;
-    dispatch(loginUser({ email, password }));
+  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    try {
+      const { email, password } = data;
+      const resultAction = await dispatch(loginUser({ email, password }));
+
+      if (loginUser.rejected.match(resultAction)) {
+        throw new Error(resultAction.error.message || "Login failed");
+      }
+    } catch (error: any) {
+      showCustomToast({
+        content: loginError || "Login failed",
+        variant: "error",
+      });
+    }
   };
 
   return (
@@ -86,6 +97,7 @@ const SignInForm = () => {
                         placeholder="Enter your password"
                         className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                         {...field}
+                        type="password"
                       />
                     </FormControl>
                     <FormMessage />
