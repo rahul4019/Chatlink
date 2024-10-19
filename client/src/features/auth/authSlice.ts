@@ -40,6 +40,7 @@ const authSlice = createSlice({
     },
     signupSuccess(state) {
       state.loading = false;
+      state.isUsernameAvailable = false;
     },
     signupFailure(state, action: PayloadAction<string>) {
       state.loading = false;

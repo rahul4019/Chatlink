@@ -11,3 +11,16 @@ export const userUpdateSchema = z
       message: "At least one field username or status_message must be provided",
     },
   );
+
+export const usernameSchema = z
+  .string()
+  .min(3, { message: "Username must be at least 3 characters long" })
+  .max(20, { message: "Username must be less than 20 characters" })
+  .regex(
+    /^[a-zA-Z0-9_]+$/,
+    "Username should only contain alphanumeric characters and underscores",
+  )
+  .regex(
+    /^(?!_)[a-zA-Z0-9_]+(?<!_)$/,
+    "Username should not start or end with an underscore",
+  );

@@ -10,6 +10,7 @@ import {
   signupFailure,
   signupStart,
   signupSuccess,
+  usernameCheckFailure,
   usernameCheckStart,
   usernameCheckSuccess,
 } from "./authSlice";
@@ -40,8 +41,8 @@ export const checkUsernameAvailability = createAsyncThunk<
       console.log(response);
       dispatch(usernameCheckSuccess());
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Signup failed";
-      dispatch(signupFailure(errorMessage));
+      const errorMessage = error.response?.data?.message || "Server error";
+      dispatch(usernameCheckFailure(errorMessage));
       return rejectWithValue(errorMessage);
     }
   },

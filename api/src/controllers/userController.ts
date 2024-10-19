@@ -8,7 +8,7 @@ import {
   updateUserProfilePicture,
 } from "../services/userServices";
 import { getProfilePictureById } from "../models/userModel";
-import { userUpdateSchema } from "../validators/userValidators";
+import { usernameSchema, userUpdateSchema } from "../validators/userValidators";
 
 export const updateProfilePicture = async (
   req: Request,
@@ -105,12 +105,26 @@ export const isUsernameUnique = async (
   next: NextFunction,
 ): Promise<Response<ApiResponse> | void> => {
   try {
-    const username = req.query.username as string
+    const username = req.query.username as string;
 
     if (!username) {
       const response: ApiResponse = {
         success: false,
         message: "Please provide a username",
+      };
+
+      return res.status(400).json(response);
+    }
+
+    // zod validation
+
+    const result = usernameSchema.safeParse(username);
+
+    if (!result.success) {
+      const response: ApiResponse = {
+        success: false,
+        message: result.error.errors[0].message,
+        data: result.error.errors,
       };
 
       return res.status(400).json(response);

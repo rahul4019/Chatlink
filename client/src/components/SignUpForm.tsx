@@ -122,9 +122,10 @@ const SignUpForm = () => {
                         </span>
                       ) : (
                         !loadingUsername &&
-                        !usernameError && (
+                        usernameError && (
                           <span className="text-red-500 flex gap-2 items-center">
-                            <CircleX size={16} /> username already taken
+                            <CircleX size={16} />
+                            {usernameError}
                           </span>
                         )
                       )}
@@ -144,7 +145,7 @@ const SignUpForm = () => {
                         placeholder="Enter your email"
                         className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                         {...field}
-                        type="password"
+                        type="text"
                       />
                     </FormControl>
                     <FormMessage />
@@ -180,6 +181,7 @@ const SignUpForm = () => {
                         placeholder="Confirm your password"
                         className="bg-background border-gray-600 text-foreground placeholder-secondary font-semibold"
                         {...field}
+                        type="password"
                       />
                     </FormControl>
                     <FormMessage />
