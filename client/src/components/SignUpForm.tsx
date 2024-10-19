@@ -76,7 +76,22 @@ const SignUpForm = () => {
   };
 
   const handleCheckUsername = async (username: string) => {
-    dispatch(checkUsernameAvailability(username));
+    const debounce = (func: (username: string) => void, delay: number) => {
+      let timeoutId: NodeJS.Timeout;
+
+      return (...args: [string]) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          func(...args);
+        }, delay);
+      };
+    };
+
+    const debouncedFunction = debounce((username) => {
+      dispatch(checkUsernameAvailability(username));
+    }, 1000);
+
+    debouncedFunction(username);
   };
 
   return (
