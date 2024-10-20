@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { X, Search, EllipsisVertical, MessageCirclePlus } from "lucide-react";
+import { X, Search, EllipsisVertical } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logoutUser } from "@/features/auth/authThunk";
 import { useAppDispatch } from "@/app/hooks";
+import { CommandDialogCompnent } from "./CommandDialog";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
@@ -23,7 +24,6 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showCommandDialog, setShowCommandDialog] = useState(false);
 
   const [chats] = useState([
     { id: 1, name: "John Doe", lastMessage: "See you tomorrow!" },
@@ -68,11 +68,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
       <div className="flex items-center justify-between p-4 border-b border-border">
         <h1 className="text-xl font-semibold">Chats</h1>
         <div className="flex gap-2">
-          <MessageCirclePlus
-            size={20}
-            className="cursor-pointer"
-            onClick={() => setShowCommandDialog(!showCommandDialog)}
-          />
+          <CommandDialogCompnent />
           <DropdownMenu>
             <DropdownMenuTrigger>
               <EllipsisVertical size={16} />

@@ -1,20 +1,28 @@
-import * as React from "react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Command, CommandInput } from "@/components/ui/command";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  CommandDialog,
+  CommandInput,
+  CommandList,
+} from "@/components/ui/command";
+import { MessageCirclePlus } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { closeDialog, openDialog } from "@/features/dialog/dialogSlice";
+import { Skeleton } from "./ui/skeleton";
 
-export function CommandDemoComponent() {
-  const [open, setOpen] = React.useState(false);
+export function CommandDialogCompnent() {
+  const dispatch = useAppDispatch();
+  const { isOpen } = useAppSelector((state) => state.dialog);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Open Command Menu</Button>
-      </DialogTrigger>
-      <DialogContent className="p-0">
-        <Command className="rounded-lg border shadow-md">
-          <CommandInput placeholder="Type a command or search..." />
+    <>
+      <MessageCirclePlus
+        className="cursor-pointer"
+        onClick={() => dispatch(openDialog())}
+      />
+      <CommandDialog open={isOpen} onOpenChange={() => dispatch(closeDialog())}>
+        <CommandInput placeholder="Search users..." />
+        <CommandList>
+          {/* <CommandEmpty>No users found</CommandEmpty> */}
+
           <div className="px-3 py-2 space-y-4">
             <div className="flex items-center space-x-4">
               <Skeleton className="h-12 w-12 rounded-full" />
@@ -38,9 +46,8 @@ export function CommandDemoComponent() {
               </div>
             </div>
           </div>
-        </Command>
-      </DialogContent>
-    </Dialog>
+        </CommandList>
+      </CommandDialog>
+    </>
   );
 }
-
