@@ -1,9 +1,11 @@
 import {
+  allUsers,
   getUserDetailsById,
   updateProfilePicture,
   updateUserDetailsById,
   userNameExist,
 } from "../models/userModel";
+import { PublicUser } from "../types/user";
 import CustomError from "../utils/customError";
 
 export const updateUserProfilePicture = async (
@@ -40,4 +42,8 @@ export const checkUsernameExist = async (
   username: string,
 ): Promise<boolean> => {
   return await userNameExist(username);
+};
+
+export const getUsers = async (): Promise<PublicUser[]> => {
+  return await allUsers();
 };

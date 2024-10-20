@@ -1,5 +1,5 @@
 import { query } from "../config/db";
-import { User } from "../types/user";
+import { PublicUser, User } from "../types/user";
 import CustomError from "../utils/customError";
 
 // creates users table
@@ -153,7 +153,6 @@ export const updateUserDetailsById = async (
     WHERE id = $1;
   `;
 
-  console.log("QUERY: ", updateUserDetailsQuery);
   try {
     await query(updateUserDetailsQuery, [id]);
   } catch (error) {
@@ -177,5 +176,22 @@ export const userNameExist = async (username: string): Promise<boolean> => {
   } catch (error) {
     console.log("Error checking unique username", error);
     throw new CustomError("Could not check unique username", 500);
+  }
+};
+
+export const allUsers = async (): Promise<PublicUser[]> => {
+  try {
+    const allUsersQuery = `
+      SELECT id, email, username, profile_picture, status_message, is_online, last_seen 
+      From users;
+    `;
+
+    const result = await query(allUsersQuery);
+
+    const users: PublicUser[] = result.rows;
+    return users;
+  } catch (error) {
+    console.log("Error getting users", error);
+    throw new CustomError("Could not get users", 500);
   }
 };

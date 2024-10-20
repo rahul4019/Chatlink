@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getAllUsers,
   isUsernameUnique,
   updateProfilePicture,
   updateUserDetails,
@@ -9,14 +10,16 @@ import { upload } from "../middleware/multer";
 
 const router = express.Router();
 
+router.get("/unique-username", isUsernameUnique);
+
+// Protected routes
 router.post(
   "/profile-picture",
   verifyAccessToken,
   upload.single("profile_picture"),
   updateProfilePicture,
 );
-
 router.put("/update", verifyAccessToken, updateUserDetails);
+router.get("/users", verifyAccessToken, getAllUsers);
 
-router.get("/unique-username", isUsernameUnique);
 export default router;

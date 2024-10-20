@@ -4,6 +4,7 @@ import CustomError from "../utils/customError";
 import { deleteExistingProfilePicture, s3Upload } from "../utils/s3Upload";
 import {
   checkUsernameExist,
+  getUsers,
   updateUser,
   updateUserProfilePicture,
 } from "../services/userServices";
@@ -149,6 +150,26 @@ export const isUsernameUnique = async (
     return res.status(400).json(response);
   } catch (error) {
     console.log("Error checking unique username ", error);
+    next(error);
+  }
+};
+
+export const getAllUsers = async (
+  _: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<Response<ApiResponse> | void> => {
+  try {
+    const users = await getUsers();
+
+    const response: ApiResponse = {
+      success: true,
+      data: { users },
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log("Error getting users", error);
     next(error);
   }
 };
