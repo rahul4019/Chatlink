@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import Layout from "@/components/Layout";
 import ChatSection from "@/components/ChatSection";
-
 export default function Chat() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);

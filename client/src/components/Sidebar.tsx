@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { X, Search, EllipsisVertical } from "lucide-react";
+import { X, Search, EllipsisVertical, MessageCirclePlus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showCommandDialog, setShowCommandDialog] = useState(false);
 
   const [chats] = useState([
     { id: 1, name: "John Doe", lastMessage: "See you tomorrow!" },
@@ -66,25 +67,31 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
     <div>
       <div className="flex items-center justify-between p-4 border-b border-border">
         <h1 className="text-xl font-semibold">Chats</h1>
-        <div></div>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <EllipsisVertical size={16} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => dispatch(logoutUser())}
-            >
-              Log Out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-2">
+          <MessageCirclePlus
+            size={20}
+            className="cursor-pointer"
+            onClick={() => setShowCommandDialog(!showCommandDialog)}
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer">
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => dispatch(logoutUser())}
+              >
+                Log Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
         {isMobile && (
           <Button
