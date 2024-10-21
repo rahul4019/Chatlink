@@ -12,6 +12,7 @@ import { getAllUsers } from "@/features/user/userThunk";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { ScrollArea } from "./ui/scroll-area";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import defaultAvatar from "../assets/default-avatar.png";
 
 export function CommandDialogCompnent() {
   const dispatch = useAppDispatch();
@@ -63,7 +64,7 @@ export function CommandDialogCompnent() {
                 {users.map((user) => (
                   <div
                     key={user.id}
-                    className="flex items-center gap-3 p-4 hover:bg-secondary  cursor-pointer"
+                    className="flex items-center gap-3 p-4 rounded-md hover:bg-secondary  cursor-pointer"
                   >
                     <Avatar>
                       <AvatarImage src={user.profile_picture} />
