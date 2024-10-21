@@ -1,0 +1,38 @@
+import { User } from "@/types/user";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+interface UserState {
+  users: User[];
+  error: null | string;
+  loading: boolean;
+}
+
+const initialState: UserState = {
+  users: [],
+  error: null,
+  loading: false,
+};
+
+export const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    getUsersStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    getUsersSuccess(state, action: PayloadAction<User[]>) {
+      state.loading = false;
+      state.users = action.payload;
+    },
+    getUsersFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
+});
+
+export const { getUsersStart, getUsersSuccess, getUsersFailure } =
+  userSlice.actions;
+
+export default userSlice.reducer;
