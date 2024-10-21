@@ -114,7 +114,7 @@ export const refreshToken = async (
   if (!refreshToken) {
     const response: ApiResponse = {
       success: false,
-      message: "unauthorized request",
+      message: "Refresh token is missing",
     };
     return res.status(401).json(response);
   }

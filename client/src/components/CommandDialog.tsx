@@ -12,7 +12,6 @@ import { getAllUsers } from "@/features/user/userThunk";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { ScrollArea } from "./ui/scroll-area";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import defaultAvatar from "../assets/default-avatar.png";
 
 export function CommandDialogCompnent() {
   const dispatch = useAppDispatch();
@@ -32,11 +31,9 @@ export function CommandDialogCompnent() {
       <CommandDialog open={isOpen} onOpenChange={() => dispatch(closeDialog())}>
         <CommandInput placeholder="Search users..." />
         <CommandList>
-          {/* <CommandEmpty>No users found</CommandEmpty> */}
-
           <div className="px-3 py-2 space-y-4">
-            {loading ? (
-              <>
+            {error ? (
+              <div className="flex p-4 flex-col gap-10">
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2 flex-1">
@@ -58,7 +55,7 @@ export function CommandDialogCompnent() {
                     <Skeleton className="h-4 w-4/5" />
                   </div>
                 </div>
-              </>
+              </div>
             ) : (
               <ScrollArea className="">
                 {users.map((user) => (
