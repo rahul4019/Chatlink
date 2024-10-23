@@ -3,7 +3,7 @@ import {
   CommandInput,
   CommandList,
 } from "@/components/ui/command";
-import { MessageCirclePlus } from "lucide-react";
+import { Frown, MessageCirclePlus } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { closeDialog, openDialog } from "@/features/dialog/dialogSlice";
 import { Skeleton } from "./ui/skeleton";
@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { ScrollArea } from "./ui/scroll-area";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { searchUsers } from "@/features/user/userSlice";
+import { CommandEmpty } from "cmdk";
 
 export function CommandDialogCompnent() {
   const dispatch = useAppDispatch();
@@ -44,6 +45,13 @@ export function CommandDialogCompnent() {
           }}
         />
         <CommandList>
+          {users.length === 0 && (
+            <CommandEmpty className="flex gap-2 justify-center items-center ">
+              <Frown />
+              <span className="my-4 font-semibold">No users found</span>
+            </CommandEmpty>
+          )}
+
           <div className="px-3 py-2 space-y-4">
             {loading || error ? (
               <div className="flex p-4 flex-col gap-10">

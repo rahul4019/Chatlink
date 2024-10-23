@@ -30,13 +30,11 @@ export const userSlice = createSlice({
       state.error = action.payload;
     },
     searchUsers(state, action: PayloadAction<string>) {
-      console.log("searchkeyword: ", action.payload);
       state.users = state.users.filter(
         (user) =>
           user.username.toLowerCase().includes(action.payload.toLowerCase()) ||
           user.email.toLowerCase().includes(action.payload.toLowerCase()),
       );
-      console.log("USERS: ", state.users);
     },
   },
 });
