@@ -12,6 +12,7 @@ import { getAllUsers } from "@/features/user/userThunk";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { ScrollArea } from "./ui/scroll-area";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import { searchUsers } from "@/features/user/userSlice";
 
 export function CommandDialogCompnent() {
   const dispatch = useAppDispatch();
@@ -22,6 +23,13 @@ export function CommandDialogCompnent() {
     dispatch(getAllUsers());
   }, [isOpen === true]);
 
+  const handleSearch = (value: string) => {
+    if (value === "") {
+      dispatch(getAllUsers());
+    }
+    dispatch(searchUsers(value));
+  };
+
   return (
     <>
       <MessageCirclePlus
@@ -29,10 +37,15 @@ export function CommandDialogCompnent() {
         onClick={() => dispatch(openDialog())}
       />
       <CommandDialog open={isOpen} onOpenChange={() => dispatch(closeDialog())}>
-        <CommandInput placeholder="Search users..." />
+        <CommandInput
+          placeholder="Search users by name or email"
+          onChangeCapture={(e: React.ChangeEvent<HTMLInputElement>) => {
+            handleSearch(e.target.value.trim());
+          }}
+        />
         <CommandList>
           <div className="px-3 py-2 space-y-4">
-            {error ? (
+            {loading || error ? (
               <div className="flex p-4 flex-col gap-10">
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />

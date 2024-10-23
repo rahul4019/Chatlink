@@ -29,10 +29,19 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    searchUsers(state, action: PayloadAction<string>) {
+      console.log("searchkeyword: ", action.payload);
+      state.users = state.users.filter(
+        (user) =>
+          user.username.toLowerCase().includes(action.payload.toLowerCase()) ||
+          user.email.toLowerCase().includes(action.payload.toLowerCase()),
+      );
+      console.log("USERS: ", state.users);
+    },
   },
 });
 
-export const { getUsersStart, getUsersSuccess, getUsersFailure } =
+export const { getUsersStart, getUsersSuccess, getUsersFailure, searchUsers } =
   userSlice.actions;
 
 export default userSlice.reducer;
