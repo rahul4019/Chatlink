@@ -195,3 +195,41 @@ export const allUsers = async (): Promise<PublicUser[]> => {
     throw new CustomError("Could not get users", 500);
   }
 };
+
+export const chatHistory = async (id: string): Promise<any> => {
+  try {
+    const chatHistoryQuery = `
+      SELECT m1.*, 
+        CASE 
+          WHEN m1.sender_id = $1 THEN u2.username 
+          ELSE u1.username 
+        END AS username,
+        CASE 
+          WHEN m1.sender_id = $1 THEN u2.profile_picture 
+          ELSE u1.profile_picture 
+        END AS profile_picture,
+        CASE 
+          WHEN m1.sender_id = $1 THEN u2.id 
+          ELSE u1.id 
+        END AS user_id
+      FROM messages m1
+      JOIN (
+          SELECT LEAST(sender_id, receiver_id) AS user1, GREATEST(sender_id, receiver_id) AS user2, MAX(sent_at) AS latest
+          FROM messages
+          WHERE sender_id = $1 OR receiver_id = $1
+          GROUP BY user1, user2
+      ) m2 ON LEAST(m1.sender_id, m1.receiver_id) = m2.user1 
+            AND GREATEST(m1.sender_id, m1.receiver_id) = m2.user2 
+            AND m1.sent_at = m2.latest
+      LEFT JOIN users u1 ON m1.sender_id = u1.id
+      LEFT JOIN users u2 ON m1.receiver_id = u2.id;
+    `;
+
+    const result = await query(chatHistoryQuery, [id]);
+    const history = result.rows;
+    return history;
+  } catch (error) {
+    console.log("Error getting chat history", error);
+    throw new CustomError("Could not get chat history", 500);
+  }
+};

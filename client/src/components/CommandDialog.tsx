@@ -8,17 +8,17 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { closeDialog, openDialog } from "@/features/dialog/dialogSlice";
 import { Skeleton } from "./ui/skeleton";
 import { useEffect } from "react";
-import { getAllUsers } from "@/features/user/userThunk";
+import { getAllUsers } from "@/features/users/usersThunk";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { ScrollArea } from "./ui/scroll-area";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { searchUsers } from "@/features/user/userSlice";
+import { searchUsers } from "@/features/users/usersSlice";
 import { CommandEmpty } from "cmdk";
 
 export function CommandDialogCompnent() {
   const dispatch = useAppDispatch();
   const { isOpen } = useAppSelector((state) => state.dialog);
-  const { users, loading, error } = useAppSelector((state) => state.user);
+  const { users, loading, error } = useAppSelector((state) => state.users);
 
   useEffect(() => {
     dispatch(getAllUsers());
