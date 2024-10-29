@@ -1,4 +1,5 @@
 import { query } from "../config/db";
+import { LatestChat } from "../types/chat";
 import { PublicUser, User } from "../types/user";
 import CustomError from "../utils/customError";
 
@@ -196,7 +197,7 @@ export const allUsers = async (): Promise<PublicUser[]> => {
   }
 };
 
-export const chatHistory = async (id: string): Promise<any> => {
+export const chatHistory = async (id: string): Promise<Array<LatestChat>> => {
   try {
     const chatHistoryQuery = `
       SELECT m1.*, 

@@ -6,7 +6,7 @@ export const getUserchats = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): Promise<any> => {
+): Promise<Response<ApiResponse> | void> => {
   try {
     const userId = req.user?.id;
 
