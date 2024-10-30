@@ -1,7 +1,8 @@
+import { LatestChat } from "@/types/chat";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
-  chats: [];
+  chats: Array<LatestChat>;
   loading: boolean;
   error: null | string;
 }
@@ -20,7 +21,7 @@ export const userSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    getUserChatHistorySuccess(state, action: PayloadAction<any>) {
+    getUserChatHistorySuccess(state, action: PayloadAction<Array<LatestChat>>) {
       state.loading = false;
       state.chats = action.payload;
     },

@@ -38,9 +38,6 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
 
         <div className="flex gap-2">
           <ModeToggle />
-          <Button variant="ghost" size="icon">
-            <MenuIcon className="h-5 w-5" />
-          </Button>
         </div>
       </div>
 

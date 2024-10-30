@@ -1,10 +1,15 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { X, Search, EllipsisVertical } from "lucide-react";
+import {
+  X,
+  Search,
+  EllipsisVertical,
+  LogOut,
+  UserRoundPen,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +33,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { chats, loading, error } = useAppSelector((state) => state.user);
+  const { chats, loading } = useAppSelector((state) => state.user);
   useEffect(() => {
     dispatch(getUserChatHistory());
   }, []);
@@ -40,18 +45,22 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
+  // generates skeletons
   const generateSkeletons = () => {
+    const skeletons = [];
     for (let i = 0; i < 5; i++) {
-      return (
-        <div className="flex p-3 items-center space-x-4">
+      skeletons.push(
+        <div key={i} className="flex p-3 items-center space-x-4">
           <Skeleton className="h-12 w-12 rounded-full" />
           <div className="space-y-2">
             <Skeleton className="h-4 w-[150px]" />
             <Skeleton className="h-4 w-[100px]" />
           </div>
-        </div>
+        </div>,
       );
     }
+
+    return skeletons;
   };
 
   const filteredChats = chats.filter(
@@ -71,15 +80,17 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
+
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
-                Profile
+                <UserRoundPen size={16} className="mr-2" />
+                <span>Profile</span>
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="cursor-pointer"
+                className="cursor-pointer flex items-center"
                 onClick={() => dispatch(logoutUser())}
               >
-                Log Out
+                <LogOut size={16} className="mr-2" /> <span> Log Out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -141,24 +152,3 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
 };
 
 export default Sidebar;
-{
-  /* <motion.div */
-}
-{
-  /*   key={chat.id} */
-}
-{
-  /*   initial={{ opacity: 0, y: 20 }} */
-}
-{
-  /*   animate={{ opacity: 1, y: 0 }} */
-}
-{
-  /*   transition={{ delay: chat.id * 0.1 }} */
-}
-{
-  /*   className="flex items-center gap-3 p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer" */
-}
-{
-  /* > */
-}
