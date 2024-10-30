@@ -16,14 +16,20 @@ import {
 import { logoutUser } from "@/features/auth/authThunk";
 import { useAppDispatch } from "@/app/hooks";
 import { CommandDialogCompnent } from "./CommandDialog";
+import { getUserChatHistory } from "@/features/user/userThunk";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
 };
+
 const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    dispatch(getUserChatHistory());
+  }, []);
 
   const [chats] = useState([
     { id: 1, name: "John Doe", lastMessage: "See you tomorrow!" },
