@@ -21,14 +21,9 @@ export default function Chat() {
         <div className="flex h-screen bg-background">
           {/* Sidebar for larger screens */}
           {!isMobile && (
-            <motion.div
-              initial={{ x: -280 }}
-              animate={{ x: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="w-64 bg-card border-r border-border"
-            >
+            <div className="min-w-[350px] bg-card border-r border-border">
               <Sidebar setSidebarOpen={setSidebarOpen} />
-            </motion.div>
+            </div>
           )}
 
           {/* Sidebar for mobile screens */}
@@ -48,7 +43,7 @@ export default function Chat() {
 
           {/* Main Chat Area */}
           {/* <ChatSection isMobile={isMobile} setSidebarOpen={setSidebarOpen} /> */}
-          <NoChatSelected />
+          <NoChatSelected isMobile={isMobile} setSidebarOpen={setSidebarOpen} />
         </div>
       </div>
     </Layout>

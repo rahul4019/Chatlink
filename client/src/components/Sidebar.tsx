@@ -50,11 +50,11 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
     const skeletons = [];
     for (let i = 0; i < 5; i++) {
       skeletons.push(
-        <div key={i} className="flex p-3 items-center space-x-4">
+        <div key={i} className="flex w-full p-3 items-center space-x-4">
           <Skeleton className="h-12 w-12 rounded-full" />
           <div className="space-y-2">
             <Skeleton className="h-4 w-[150px]" />
-            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-4 w-[250px]" />
           </div>
         </div>,
       );
@@ -69,7 +69,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
       chat.message_text.toLowerCase().includes(searchQuery.toLowerCase()),
   );
   return (
-    <div>
+    <div className="w-full">
       <div className="flex items-center justify-between p-4 border-b border-border">
         <h1 className="text-xl font-semibold">Chats</h1>
         <div className="flex gap-2">
