@@ -31,6 +31,9 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    toggleChatSelection(state, action: PayloadAction<boolean>) {
+      state.chatSelected = action.payload;
+    },
   },
 });
 
@@ -38,6 +41,7 @@ export const {
   getUserChatHistoryStart,
   getUserChatHistorySuccess,
   getUserChatHistoryFailure,
+  toggleChatSelection,
 } = userSlice.actions;
 
 export default userSlice.reducer;

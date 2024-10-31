@@ -23,6 +23,7 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { CommandDialogCompnent } from "./CommandDialog";
 import { getUserChatHistory } from "@/features/user/userThunk";
 import { Skeleton } from "./ui/skeleton";
+import { toggleChatSelection } from "@/features/user/userSlice";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
@@ -33,7 +34,9 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { chats, loading } = useAppSelector((state) => state.user);
+  const { chats, loading, chatSelected } = useAppSelector(
+    (state) => state.user,
+  );
   useEffect(() => {
     dispatch(getUserChatHistory());
   }, []);
@@ -125,6 +128,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
               <div
                 key={chat.id}
                 className="flex items-center gap-3 p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                onClick={() => dispatch(toggleChatSelection(true))}
               >
                 <Avatar>
                   <AvatarImage

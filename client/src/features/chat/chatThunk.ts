@@ -1,1 +1,3 @@
-// get all the one-on-one chats
+// import { createAsyncThunk } from "@reduxjs/toolkit";
+
+// const getChats = createAsyncThunk("chat/getChats", )
