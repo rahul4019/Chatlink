@@ -24,6 +24,8 @@ import { CommandDialogCompnent } from "./CommandDialog";
 import { getUserChatHistory } from "@/features/user/userThunk";
 import { Skeleton } from "./ui/skeleton";
 import { toggleChatSelection } from "@/features/user/userSlice";
+import { setSelectedUser } from "@/features/chat/chatSlice";
+import { User } from "@/types/user";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
@@ -34,9 +36,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { chats, loading, chatSelected } = useAppSelector(
-    (state) => state.user,
-  );
+  const { chats, loading } = useAppSelector((state) => state.user);
   useEffect(() => {
     dispatch(getUserChatHistory());
   }, []);
@@ -64,6 +64,17 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
     }
 
     return skeletons;
+  };
+
+  // handles chat selection
+  const handleChatSelection = (chat: any) => {
+    dispatch(toggleChatSelection(true));
+    const user: Omit<User, "email"> = {
+      id: chat.user_id,
+      username: chat.username,
+      profilePicture: chat.profile_picture,
+    };
+    dispatch(setSelectedUser(user));
   };
 
   const filteredChats = chats.filter(
@@ -127,8 +138,8 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
           : filteredChats.map((chat) => (
               <div
                 key={chat.id}
-                className="flex items-center gap-3 p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer"
-                onClick={() => dispatch(toggleChatSelection(true))}
+                className="flex items-center gap-3 p-4 hover:bg-accent/20 hover:text-foreground cursor-pointer"
+                onClick={() => handleChatSelection(chat)}
               >
                 <Avatar>
                   <AvatarImage
@@ -143,7 +154,9 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-medium">{chat.username}</h3>
+                  <h3 className="font-medium text-foreground">
+                    {chat.username}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     {chat.message_text}
                   </p>

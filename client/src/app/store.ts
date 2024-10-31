@@ -3,6 +3,7 @@ import authReducer from "../features/auth/authSlice.ts";
 import dialogReducer from "../features/dialog/dialogSlice.ts";
 import usersReducer from "../features/users/usersSlice.ts";
 import userReducer from "../features/user/userSlice.ts";
+import chatReducer from "../features/chat/chatSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     dialog: dialogReducer,
     users: usersReducer,
     user: userReducer,
+    chat: chatReducer,
   },
 });
 

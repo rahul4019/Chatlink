@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MenuIcon, SendIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAppSelector } from "@/app/hooks";
 
 type ChatSectionprops = {
   isMobile: boolean;
@@ -12,6 +13,7 @@ type ChatSectionprops = {
 };
 
 const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
+  const { selectedUser } = useAppSelector((state) => state.chat);
   return (
     <div className="flex-1 flex flex-col">
       {/* Chat Header */}
@@ -27,13 +29,10 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
             </Button>
           )}
           <Avatar>
-            <AvatarImage
-              src="/placeholder.svg?height=40&width=40"
-              alt="John Doe"
-            />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarImage src={selectedUser?.profilePicture} alt="avatar" />
+            <AvatarFallback>{selectedUser?.username}</AvatarFallback>
           </Avatar>
-          <h2 className="text-lg font-semibold">John Doe</h2>
+          <h2 className="text-lg font-semibold">{selectedUser?.username}</h2>
         </div>
 
         <div className="flex gap-2">
