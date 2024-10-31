@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiResponse } from "../types/apiResponse";
-import { getChatHistory } from "../services/chatServices";
+import { getChatHistory, getChatsOfTwoUsers } from "../services/chatServices";
+import { chatsBetweenTwoUsersSchema } from "../validators/chatValidators";
 
 export const getUserchats = async (
   req: Request,
@@ -28,9 +29,46 @@ export const getUserchats = async (
       },
     };
 
-    res.status(200).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     console.log("Error getting user chats: ", error);
+    next(error);
+  }
+};
+
+export const getChatsBetweenTwousers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    // zod validation
+    const result = chatsBetweenTwoUsersSchema.safeParse(req.query);
+
+    if (!result.success) {
+      const response: ApiResponse = {
+        success: false,
+        message: "Validation failed",
+        data: result.error.errors,
+      };
+
+      return res.status(400).json(response);
+    }
+
+    const { userId1, userId2 } = result.data;
+
+    const chats = await getChatsOfTwoUsers(userId1, userId2);
+
+    const response: ApiResponse = {
+      success: true,
+      data: {
+        chats: chats,
+      },
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log("Error getting chats between two users: ", error);
     next(error);
   }
 };

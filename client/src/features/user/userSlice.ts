@@ -3,12 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
   chats: Array<LatestChat>;
+  chatSelected: boolean;
   loading: boolean;
   error: null | string;
 }
 
 const initialState: UserState = {
   chats: [],
+  chatSelected: false,
   loading: false,
   error: null,
 };

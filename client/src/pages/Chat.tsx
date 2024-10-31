@@ -4,7 +4,9 @@ import Sidebar from "@/components/Sidebar";
 import Layout from "@/components/Layout";
 import ChatSection from "@/components/ChatSection";
 import NoChatSelected from "@/components/NoChatSelected";
+import { useAppSelector } from "@/app/hooks";
 export default function Chat() {
+  const { chatSelected } = useAppSelector((state) => state.user);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -42,8 +44,14 @@ export default function Chat() {
           </AnimatePresence>
 
           {/* Main Chat Area */}
-          {/* <ChatSection isMobile={isMobile} setSidebarOpen={setSidebarOpen} /> */}
-          <NoChatSelected isMobile={isMobile} setSidebarOpen={setSidebarOpen} />
+          {chatSelected ? (
+            <ChatSection isMobile={isMobile} setSidebarOpen={setSidebarOpen} />
+          ) : (
+            <NoChatSelected
+              isMobile={isMobile}
+              setSidebarOpen={setSidebarOpen}
+            />
+          )}
         </div>
       </div>
     </Layout>
