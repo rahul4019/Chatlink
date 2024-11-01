@@ -2,9 +2,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Skeleton } from "./ui/skeleton";
+import { useAppSelector } from "@/app/hooks";
 
 const MessageSection = () => {
-  const [loading, setloading] = useState(true);
+  // const [loading, setloading] = useState(true);
   const [messages, setMessages] = useState([
     { id: 1, text: "Hey there!", sent: false },
     { id: 2, text: "Hi! How are you?", sent: true },
@@ -23,6 +24,8 @@ const MessageSection = () => {
     { id: 15, text: "Do you have any plans for the weekend?", sent: false },
   ]);
 
+  const { chats, loading } = useAppSelector((state) => state.chat);
+  const { user } = useAppSelector((state) => state.auth);
   // const sendMessage = (text: string) => {
   //   const newMessage = { id: messages.length + 1, text, sent: true };
   //   setMessages([...messages, newMessage]);
@@ -46,9 +49,13 @@ const MessageSection = () => {
               </div>
             </div>
           ))
-        : messages.map(
+        : chats.map(
             (
-              message: { id: number; text: string; sent: boolean },
+              message: {
+                id: number;
+                message_text: string;
+                sent: boolean | null;
+              },
               i: number,
             ) => (
               <motion.div
@@ -56,19 +63,19 @@ const MessageSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className={`flex ${message.sent ? "justify-end" : "justify-start"} mb-4`}
+                className={`flex ${message.sender_id === user.id ? "justify-end" : "justify-start"} mb-4`}
               >
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   className={`max-w-[70%] p-3 rounded-3xl ${
-                    message.sent
+                    message.sender_id === user.id
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-secondary-foreground"
                   }`}
                 >
-                  <p>{message.text}</p>
+                  <p>{message.message_text}</p>
                   <p className="text-xs mt-1 opacity-70">
                     {new Date().toLocaleTimeString()}
                   </p>
