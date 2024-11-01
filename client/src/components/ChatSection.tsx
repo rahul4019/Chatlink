@@ -3,7 +3,7 @@ import MessageSection from "@/components/MessageSection";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MenuIcon, SendIcon } from "lucide-react";
+import { CircleUserRound, Image, MenuIcon, SendIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAppSelector } from "@/app/hooks";
 
@@ -30,7 +30,9 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
           )}
           <Avatar>
             <AvatarImage src={selectedUser?.profilePicture} alt="avatar" />
-            <AvatarFallback>{selectedUser?.username}</AvatarFallback>
+            <AvatarFallback>
+              <CircleUserRound size={35} className="text-accent" />
+            </AvatarFallback>
           </Avatar>
           <h2 className="text-lg font-semibold">{selectedUser?.username}</h2>
         </div>
