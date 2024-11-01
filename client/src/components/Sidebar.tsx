@@ -9,6 +9,7 @@ import {
   EllipsisVertical,
   LogOut,
   UserRoundPen,
+  CircleUserRound,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -147,10 +148,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
                     alt="profile_picture"
                   />
                   <AvatarFallback>
-                    {chat.username
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
+                    <CircleUserRound size={35} className="text-accent" />
                   </AvatarFallback>
                 </Avatar>
                 <div>

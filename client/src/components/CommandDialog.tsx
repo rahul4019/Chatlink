@@ -3,7 +3,7 @@ import {
   CommandInput,
   CommandList,
 } from "@/components/ui/command";
-import { Frown, MessageCirclePlus } from "lucide-react";
+import { CircleUserRound, Frown, MessageCirclePlus } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { closeDialog, openDialog } from "@/features/dialog/dialogSlice";
 import { Skeleton } from "./ui/skeleton";
@@ -87,10 +87,7 @@ export function CommandDialogCompnent() {
                     <Avatar>
                       <AvatarImage src={user.profile_picture} />
                       <AvatarFallback>
-                        {user.username
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
+                        <CircleUserRound size={35} className="text-accent" />
                       </AvatarFallback>
                     </Avatar>
                     <div>
