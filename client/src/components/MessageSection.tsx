@@ -37,7 +37,7 @@ const MessageSection = () => {
               className={`flex ${index % 2 === 0 ? "justify-start" : "justify-end"}`}
             >
               <div
-                className={`${index % 2 === 0 ? "rounded-tr-2xl rounded-br-2xl rounded-bl-2xl" : "rounded-tl-2xl rounded-bl-2xl rounded-br-2xl"} p-4 bg-muted`}
+                className={`${index % 2 === 0 ? "rounded-tr-2xl rounded-br-2xl rounded-bl-2xl bg-secondary" : "rounded-tl-2xl rounded-bl-2xl rounded-br-2xl bg-accent/50"} p-4 `}
               >
                 <Skeleton
                   className={`h-6 ${index % 2 === 0 ? "w-[300px]" : "w-[250px]"}`}

@@ -27,6 +27,7 @@ import { Skeleton } from "./ui/skeleton";
 import { toggleChatSelection } from "@/features/user/userSlice";
 import { setSelectedUser } from "@/features/chat/chatSlice";
 import { User } from "@/types/user";
+import { getChats } from "@/features/chat/chatThunk";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
@@ -38,6 +39,8 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { chats, loading } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.auth);
+
   useEffect(() => {
     dispatch(getUserChatHistory());
   }, []);
@@ -49,33 +52,26 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
-  // generates skeletons
-  const generateSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 5; i++) {
-      skeletons.push(
-        <div key={i} className="flex w-full p-3 items-center space-x-4">
-          <Skeleton className="h-12 w-12 rounded-full" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[150px]" />
-            <Skeleton className="h-4 w-[250px]" />
-          </div>
-        </div>,
-      );
-    }
-
-    return skeletons;
-  };
-
   // handles chat selection
   const handleChatSelection = (chat: any) => {
     dispatch(toggleChatSelection(true));
-    const user: Omit<User, "email"> = {
-      id: chat.user_id,
+
+    // find the selected user's id from the chat object
+    const selectedUserId =
+      user?.id === chat.sender_id ? chat.receiver_id : chat.sender_id;
+
+    // user object for the selectedUser
+    const selectedUser: Omit<User, "email"> = {
+      id: selectedUserId,
       username: chat.username,
       profilePicture: chat.profile_picture,
     };
-    dispatch(setSelectedUser(user));
+
+    // set the profile of the selected user
+    dispatch(setSelectedUser(selectedUser));
+
+    // get all the chats between the logged in user and selected user
+    dispatch(getChats({ userId1: user?.id!, userId2: selectedUser.id }));
   };
 
   const filteredChats = chats.filter(
@@ -135,7 +131,18 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
       </div>
       <ScrollArea className="h-[calc(100vh-128px)]">
         {loading
-          ? generateSkeletons()
+          ? [...Array(6)].map((_, index) => (
+              <div
+                key={index}
+                className="flex w-full p-3 items-center space-x-4"
+              >
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[150px]" />
+                  <Skeleton className="h-4 w-[250px]" />
+                </div>
+              </div>
+            ))
           : filteredChats.map((chat) => (
               <div
                 key={chat.id}

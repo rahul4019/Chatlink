@@ -22,9 +22,26 @@ const chatSlice = createSlice({
     setSelectedUser(state, action: PayloadAction<Omit<User, "email">>) {
       state.selectedUser = action.payload;
     },
+    getChatsStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    getChatsSuccess(state, action: PayloadAction<any>) {
+      state.loading = false;
+      state.chats = action.payload;
+    },
+    getChatsFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
-export const { setSelectedUser } = chatSlice.actions;
+export const {
+  setSelectedUser,
+  getChatsStart,
+  getChatsSuccess,
+  getChatsFailure,
+} = chatSlice.actions;
 
 export default chatSlice.reducer;
