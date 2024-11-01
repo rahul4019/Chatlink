@@ -63,21 +63,24 @@ const MessageSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className={`flex ${message.sender_id === user.id ? "justify-end" : "justify-start"} mb-4`}
+                className={`flex ${message.sender_id === user?.id ? "justify-end" : "justify-start"} mb-4`}
               >
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  className={`max-w-[70%] p-3 rounded-3xl ${
-                    message.sender_id === user.id
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-secondary-foreground"
+                  className={`max-w-[70%] px-3 pt-2 pb-1 ${
+                    message.sender_id === user?.id
+                      ? "bg-primary text-primary-foreground rounded-tl-2xl rounded-bl-2xl rounded-br-2xl"
+                      : "bg-secondary text-secondary-foreground rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
                   }`}
                 >
                   <p>{message.message_text}</p>
-                  <p className="text-xs mt-1 opacity-70">
-                    {new Date().toLocaleTimeString()}
+                  <p className="text-xs text-end mt-2 opacity-70">
+                    {new Date(message.sent_at).toLocaleString("en-us", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </p>
                 </motion.div>
               </motion.div>
