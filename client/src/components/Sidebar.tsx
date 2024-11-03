@@ -146,7 +146,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
           : filteredChats.map((chat) => (
               <div
                 key={chat.id}
-                className="flex items-center gap-3 p-4 hover:bg-accent/20 hover:text-foreground cursor-pointer"
+                className="flex items-center gap-3 p-4 hover:bg-accent/20 hover:text-foreground cursor-pointer border-b w-full"
                 onClick={() => handleChatSelection(chat)}
               >
                 <Avatar>
@@ -158,7 +158,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
                     <CircleUserRound size={35} className="text-accent" />
                   </AvatarFallback>
                 </Avatar>
-                <div>
+                <div className="">
                   <h3 className="font-medium text-foreground">
                     {chat.username}
                   </h3>

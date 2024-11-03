@@ -3,7 +3,7 @@ import MessageSection from "@/components/MessageSection";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CircleUserRound, Image, MenuIcon, SendIcon } from "lucide-react";
+import { CircleUserRound, MenuIcon, SendIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAppSelector } from "@/app/hooks";
 

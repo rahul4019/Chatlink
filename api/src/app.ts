@@ -5,8 +5,14 @@ import routes from "./routes";
 import errorHandler from "./middleware/errorHandler";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
+
+io.on("connection", (socket) => {});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -57,4 +63,5 @@ app.get("/test-db", async (_: Request, res: Response) => {
 app.use("/api/v1", routes);
 
 app.use(errorHandler);
-export default app;
+
+export default server;
