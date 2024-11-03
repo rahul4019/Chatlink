@@ -5,12 +5,16 @@ import Layout from "@/components/Layout";
 import ChatSection from "@/components/ChatSection";
 import NoChatSelected from "@/components/NoChatSelected";
 import { useAppSelector } from "@/app/hooks";
+import { io } from "socket.io-client";
+
 export default function Chat() {
   const { chatSelected } = useAppSelector((state) => state.user);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.emit("user-message", "Hello world");
     const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
     checkIsMobile();
     window.addEventListener("resize", checkIsMobile);

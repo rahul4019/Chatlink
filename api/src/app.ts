@@ -9,10 +9,21 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 
 const app = express();
-const server = createServer(app);
-const io = new Server(server);
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  },
+});
 
-io.on("connection", (socket) => {});
+io.on("connection", (socket) => {
+  // console.log(socket.id);
+  console.log("client connected");
+  socket.on("user-message", (message) => {
+    console.log("received message: ", message);
+  });
+});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -64,4 +75,4 @@ app.use("/api/v1", routes);
 
 app.use(errorHandler);
 
-export default server;
+export default httpServer;
