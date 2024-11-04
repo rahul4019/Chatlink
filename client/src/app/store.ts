@@ -4,6 +4,7 @@ import dialogReducer from "../features/dialog/dialogSlice.ts";
 import usersReducer from "../features/users/usersSlice.ts";
 import userReducer from "../features/user/userSlice.ts";
 import chatReducer from "../features/chat/chatSlice.ts";
+import socketReducer from "../features/socket/socketSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     users: usersReducer,
     user: userReducer,
     chat: chatReducer,
+    socket: socketReducer,
   },
 });
 
