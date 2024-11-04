@@ -1,3 +1,4 @@
+import http from "http";
 import express, { Request, Response } from "express";
 import { query } from "./config/db";
 import { ApiResponse } from "./types/apiResponse";
@@ -5,25 +6,12 @@ import routes from "./routes";
 import errorHandler from "./middleware/errorHandler";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { createServer } from "http";
-import { Server } from "socket.io";
+import { initSocket } from "./socket";
 
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  },
-});
+const server = http.createServer(app);
 
-io.on("connection", (socket) => {
-  // console.log(socket.id);
-  console.log("client connected");
-  socket.on("user-message", (message) => {
-    console.log("received message: ", message);
-  });
-});
+initSocket(server);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -75,4 +63,4 @@ app.use("/api/v1", routes);
 
 app.use(errorHandler);
 
-export default httpServer;
+export default server;
