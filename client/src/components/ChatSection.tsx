@@ -13,7 +13,9 @@ type ChatSectionprops = {
 };
 
 const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
+  const { user } = useAppSelector((state) => state.auth);
   const { selectedUser } = useAppSelector((state) => state.chat);
+  const { socket } = useAppSelector((state) => state.socket);
   return (
     <div className="flex-1 flex flex-col">
       {/* Chat Header */}
@@ -56,12 +58,20 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
           <Textarea
             placeholder="Type a message..."
             className="flex-1 min-h-[80px] max-h-[160px] resize-none rounded-2xl"
-            onKeyPress={(e) => {
+            onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 const target = e.target as HTMLTextAreaElement;
+                console.log("msg: ", target.value);
                 // sendMessage(target.value);
-                target.value = "";
+                // target.value = "";
+                const data = {
+                  senderId: user?.id,
+                  receiverId: selectedUser?.id,
+                  messageText: target.value,
+                };
+
+                socket?.emit("chat:sendMessage", data);
               }
             }}
           />

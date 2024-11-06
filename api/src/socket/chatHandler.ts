@@ -8,14 +8,20 @@ interface MessagePayload {
 }
 
 export const chatHandler = (io: Server) => {
-  const sendMessage = (payload: MessagePayload) => {
+  const sendMessage = async (payload: MessagePayload) => {
     const { senderId, receiverId, messageText } = payload;
+    console.log('CHAT HANDLER: ')
+    console.log('senderId: ', senderId)
+    console.log('receiverId: ', receiverId)
+    console.log('messageText: ', messageText)
+
+
 
     // db message insertion
-    const newMessage = insertMessage(senderId, receiverId, messageText);
+    const newMessage = await insertMessage(senderId, receiverId, messageText);
 
     // emit the new message to the receiver
-    io.to(receiverId).emit("chat:receiveMessage", newMessage);
+    // io.to(receiverId).emit("chat:receiveMessage", newMessage);
 
     console.log("Message sent: ", newMessage);
   };
