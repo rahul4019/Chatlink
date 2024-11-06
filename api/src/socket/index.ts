@@ -15,7 +15,7 @@ export const initSocket = (httpServer: HttpServer) => {
   const sendMessage = chatHandler(io);
 
   io.on("connection", (socket) => {
-    // console.log(socket.id);
+    console.log(socket.id);
     // console.log("client connected");
     // socket.on("chat:sendMessage", (message) => {
     //   console.log("received message: ", message);

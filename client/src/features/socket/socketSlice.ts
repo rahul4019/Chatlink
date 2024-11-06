@@ -28,7 +28,6 @@ const socketSlice = createSlice({
 
 export const initializeSocket = (url: string) => (dispatch: AppDispatch) => {
   const socket = io(url);
-  socket.emit("chat:sendMessage", "Hello world");
   dispatch(setSocket(socket));
 
   socket.on("chat:receiveMessage", (message: any) => {

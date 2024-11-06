@@ -40,6 +40,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
 
   const { chats, loading } = useAppSelector((state) => state.user);
   const { user } = useAppSelector((state) => state.auth);
+  const { selectedUser } = useAppSelector((state) => state.chat);
 
   useEffect(() => {
     dispatch(getUserChatHistory());
@@ -146,7 +147,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
           : filteredChats.map((chat) => (
               <div
                 key={chat.id}
-                className="flex items-center gap-3 p-4 hover:bg-accent/20 hover:text-foreground cursor-pointer border-b w-full"
+                className={`flex items-center gap-3 p-4 hover:bg-accent/20 hover:text-foreground cursor-pointer border-b w-full ${selectedUser?.id === chat.user_id ? "bg-accent/20 text-foreground" : ""}`}
                 onClick={() => handleChatSelection(chat)}
               >
                 <Avatar>
