@@ -9,3 +9,12 @@ export interface LatestChat {
   profile_picture: string;
   user_id: string;
 }
+
+export interface Message {
+  id: 23;
+  is_deleted: false;
+  message_text: string;
+  receiver_id: string;
+  sender_id: string;
+  sent_at: string;
+}

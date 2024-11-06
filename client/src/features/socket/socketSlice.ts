@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import { AppDispatch } from "@/app/store";
+import { createSocketConnection } from "@/socketService";
 
 interface SocketState {
   socket: Socket | null;
@@ -28,16 +29,8 @@ const socketSlice = createSlice({
 
 export const initializeSocket =
   (url: string, userId: string) => (dispatch: AppDispatch) => {
-    const socket = io(url, {
-      auth: {
-        userId: userId,
-      },
-    }); // sending userId on connection to maintain online users on backend
+    const socket = createSocketConnection(url, userId, dispatch);
     dispatch(setSocket(socket));
-
-    socket.on("chat:receiveMessage", (message: any) => {
-      console.log("server message: ", message);
-    });
   };
 
 export const { setSocket, disconnectSocket } = socketSlice.actions;

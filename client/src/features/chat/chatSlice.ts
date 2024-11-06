@@ -1,9 +1,10 @@
 import { User } from "@/types/user";
+import { Message } from "@/types/chat";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ChatSliceProps {
   selectedUser: null | Omit<User, "email">;
-  chats: [];
+  chats: Message[];
   loading: boolean;
   error: null | string;
 }
@@ -34,6 +35,10 @@ const chatSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    addMessage(state, action: PayloadAction<any>) {
+      console.log("payload: ", action.payload);
+      state.chats.push(action.payload);
+    },
   },
 });
 
@@ -42,6 +47,7 @@ export const {
   getChatsStart,
   getChatsSuccess,
   getChatsFailure,
+  addMessage,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

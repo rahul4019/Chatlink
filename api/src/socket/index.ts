@@ -5,7 +5,7 @@ import { chatHandler } from "./chatHandler";
 let io: Server;
 
 // in memory store to keep the track of online users
-const onlineUsers: { [userId: string]: string[] } = {}; // here userId is dynamic key
+export const onlineUsers: { [userId: string]: string[] } = {}; // here userId is dynamic key
 
 export const initSocket = (httpServer: HttpServer) => {
   io = new Server(httpServer, {

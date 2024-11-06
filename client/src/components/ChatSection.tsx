@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CircleUserRound, MenuIcon, SendIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAppSelector } from "@/app/hooks";
+import { sendMessage } from "@/socketService";
 
 type ChatSectionprops = {
   isMobile: boolean;
@@ -62,16 +63,14 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 const target = e.target as HTMLTextAreaElement;
-                console.log("msg: ", target.value);
-                // sendMessage(target.value);
-                // target.value = "";
                 const data = {
-                  senderId: user?.id,
-                  receiverId: selectedUser?.id,
+                  senderId: user?.id!,
+                  receiverId: selectedUser?.id!,
                   messageText: target.value,
                 };
 
-                socket?.emit("chat:sendMessage", data);
+                sendMessage(data);
+                target.value = "";
               }
             }}
           />
