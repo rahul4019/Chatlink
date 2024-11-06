@@ -18,27 +18,36 @@ export const initSocket = (httpServer: HttpServer) => {
   const sendMessage = chatHandler(io);
 
   io.on("connection", (socket) => {
-    // retriving userId from the handshake
+    // get userId from the handshake
     const userId = socket.handshake.auth.userId;
-
-    // onlineUsers[userId] = socket.id
 
     if (userId) {
       if (onlineUsers[userId]) {
-        onlineUsers[userId].push(socket.id);
+        onlineUsers[userId].push(socket.id); // put the socketId in the userId's sockets array
       } else {
-        onlineUsers[userId] = [socket.id];
+        onlineUsers[userId] = [socket.id]; // for first connection by the user
       }
     }
 
     console.log(`userId: ${userId} connected with socket ID: ${socket.id}`);
 
-    // console.log("client connected");
-    // socket.on("chat:sendMessage", (message) => {
-    //   console.log("received message: ", message);
-    //   io.emit("chat:receiveMessage", message);
-    // });
-    //
+    // disconnection logic
+    socket.on("disconnect", () => {
+      if (userId) {
+        const index = onlineUsers[userId]?.indexOf(socket.id);
+        if (index !== -1) {
+          onlineUsers[userId].splice(index, 1); // removes the socketId from the array of socketIds for that particular USER ID
+        }
+      }
+
+      // if there is a userId key without and active connection then remove it from the onlineUsers object
+      if (onlineUsers[userId]?.length === 0) {
+        delete onlineUsers[userId];
+      }
+
+      console.log(`user: ${userId} disconnected`);
+    });
+
     socket.on("chat:sendMessage", sendMessage);
   });
 };
