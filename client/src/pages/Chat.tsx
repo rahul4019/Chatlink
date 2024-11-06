@@ -13,11 +13,13 @@ import {
 export default function Chat() {
   const dispatch = useAppDispatch();
   const { chatSelected } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.auth);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    dispatch(initializeSocket("http://localhost:8000"));
+    const userId = user?.id!; // ! asserts that user.id can't be undefiend
+    dispatch(initializeSocket("http://localhost:8000", userId));
 
     return () => {
       dispatch(disconnectSocket()); // clean up socket on unmount

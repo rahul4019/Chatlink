@@ -26,14 +26,19 @@ const socketSlice = createSlice({
   },
 });
 
-export const initializeSocket = (url: string) => (dispatch: AppDispatch) => {
-  const socket = io(url);
-  dispatch(setSocket(socket));
+export const initializeSocket =
+  (url: string, userId: string) => (dispatch: AppDispatch) => {
+    const socket = io(url, {
+      auth: {
+        userId: userId,
+      },
+    }); // sending userId on connection to maintain online users on backend
+    dispatch(setSocket(socket));
 
-  socket.on("chat:receiveMessage", (message: any) => {
-    console.log("server message: ", message);
-  });
-};
+    socket.on("chat:receiveMessage", (message: any) => {
+      console.log("server message: ", message);
+    });
+  };
 
 export const { setSocket, disconnectSocket } = socketSlice.actions;
 

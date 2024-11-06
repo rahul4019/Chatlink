@@ -4,6 +4,9 @@ import { chatHandler } from "./chatHandler";
 
 let io: Server;
 
+// in memory store to keep the track of online users
+const onlineUsers: {[userId: string]:string} = {} // here userId is dynamic key
+
 export const initSocket = (httpServer: HttpServer) => {
   io = new Server(httpServer, {
     cors: {
@@ -15,7 +18,13 @@ export const initSocket = (httpServer: HttpServer) => {
   const sendMessage = chatHandler(io);
 
   io.on("connection", (socket) => {
-    console.log(socket.id);
+    // retriving userId from the handshake 
+    const userId = socket.handshake.auth.userId
+    
+    onlineUsers[userId] = socket.id
+
+    console.log(onlineUsers)
+    
     // console.log("client connected");
     // socket.on("chat:sendMessage", (message) => {
     //   console.log("received message: ", message);
