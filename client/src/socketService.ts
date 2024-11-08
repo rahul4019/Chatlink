@@ -30,8 +30,21 @@ interface sendMessageArgs {
   receiverId: string;
   messageText: string;
 }
-export const sendMessage = (data: sendMessageArgs) => {
+
+export const sendMessage = (data: sendMessageArgs, dispatch: AppDispatch) => {
+  const { senderId, receiverId, messageText } = data;
   if (socket) {
     socket.emit("chat:sendMessage", data);
   }
+
+  const message = {
+    sender_id: senderId,
+    receiver_id: receiverId,
+    message_text: messageText,
+    sent_at: new Date().toISOString(),
+  };
+
+  console.log("new message: ", message);
+
+  dispatch(addMessage(message));
 };

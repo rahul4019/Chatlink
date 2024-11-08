@@ -16,5 +16,5 @@ export interface Message {
   message_text: string;
   receiver_id: string;
   sender_id: string;
-  sent_at: string;
+  sent_at: Date;
 }

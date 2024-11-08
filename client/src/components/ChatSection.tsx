@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CircleUserRound, MenuIcon, SendIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { sendMessage } from "@/socketService";
 
 type ChatSectionprops = {
@@ -14,6 +14,7 @@ type ChatSectionprops = {
 };
 
 const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { selectedUser } = useAppSelector((state) => state.chat);
   const { socket } = useAppSelector((state) => state.socket);
@@ -69,7 +70,7 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
                   messageText: target.value,
                 };
 
-                sendMessage(data);
+                sendMessage(data, dispatch);
                 target.value = "";
               }
             }}
