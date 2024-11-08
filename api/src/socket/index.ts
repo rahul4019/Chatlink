@@ -15,7 +15,7 @@ export const initSocket = (httpServer: HttpServer) => {
     },
   });
 
-  const sendMessage = chatHandler(io);
+  const { sendMessage, typingIndicator } = chatHandler(io);
 
   io.on("connection", (socket) => {
     // get userId from the handshake
@@ -49,6 +49,7 @@ export const initSocket = (httpServer: HttpServer) => {
     });
 
     socket.on("chat:sendMessage", sendMessage);
+    socket.on("chat:typingIndicator", typingIndicator);
   });
 };
 

@@ -8,13 +8,15 @@ interface MessagePayload {
   messageText: string;
 }
 
+interface typingIndicatorPayload {
+  senderId: string;
+  receiverId: string;
+  isTyping: boolean;
+}
+
 export const chatHandler = (io: Server) => {
   const sendMessage = async (payload: MessagePayload) => {
     const { senderId, receiverId, messageText } = payload;
-    console.log("CHAT HANDLER: ");
-    console.log("senderId: ", senderId);
-    console.log("receiverId: ", receiverId);
-    console.log("messageText: ", messageText);
 
     // db message insertion
     const newMessage = await insertMessage(senderId, receiverId, messageText);
@@ -33,5 +35,38 @@ export const chatHandler = (io: Server) => {
     console.log("Message sent: ", newMessage);
   };
 
-  return sendMessage;
+  // in memory store to keep the track of user's typping timeout
+  const typingTimeouts: { [key: string]: NodeJS.Timeout } = {};
+
+  const typingIndicator = (payload: typingIndicatorPayload) => {
+    const { senderId, receiverId, isTyping } = payload;
+
+    // if the receiver is online the sending all the active connections the typing status
+    if (onlineUsers?.[receiverId]) {
+      onlineUsers[receiverId].forEach((socketId) => {
+        io.to(socketId).emit("chat:typing", { senderId, isTyping });
+      });
+    }
+
+    // clear timeouts for the sender if any in the typingTimeouts
+    if (typingTimeouts[senderId]) {
+      clearTimeout(typingTimeouts[senderId]);
+    }
+
+    // if the typing has stoped send the update after a delay
+    if (!isTyping) {
+      typingTimeouts[senderId] = setTimeout(() => {
+        if (onlineUsers?.[receiverId]) {
+          onlineUsers[receiverId].forEach((socketId) => {
+            io.to(socketId).emit("chat:typing", { senderId, isTyping });
+          });
+        }
+      });
+    }
+  };
+
+  return {
+    sendMessage,
+    typingIndicator,
+  };
 };
