@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CircleUserRound, MenuIcon, SendIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { sendMessage } from "@/socketService";
+import ChatInput from "./ChatInput";
 
 type ChatSectionprops = {
   isMobile: boolean;
@@ -14,10 +14,8 @@ type ChatSectionprops = {
 };
 
 const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
   const { selectedUser } = useAppSelector((state) => state.chat);
-  const { socket } = useAppSelector((state) => state.socket);
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Chat Header */}
@@ -47,8 +45,8 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
       </div>
 
       {/* Messages */}
-
       <MessageSection />
+
       {/* Compose Message */}
       <motion.div
         initial={{ y: 100 }}
@@ -56,29 +54,7 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="p-4 border-t border-border bg-card"
       >
-        <div className="flex items-end gap-2">
-          <Textarea
-            placeholder="Type a message..."
-            className="flex-1 min-h-[80px] max-h-[160px] resize-none rounded-2xl"
-            onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                const target = e.target as HTMLTextAreaElement;
-                const data = {
-                  senderId: user?.id!,
-                  receiverId: selectedUser?.id!,
-                  messageText: target.value,
-                };
-
-                sendMessage(data, dispatch);
-                target.value = "";
-              }
-            }}
-          />
-          <Button size="icon" className="rounded-full">
-            <SendIcon className="h-5 w-5" />
-          </Button>
-        </div>
+        <ChatInput selectedUser={selectedUser} />
       </motion.div>
     </div>
   );

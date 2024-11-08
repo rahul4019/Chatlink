@@ -1,5 +1,4 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { motion } from "framer-motion";
 import { Skeleton } from "./ui/skeleton";
 import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/types/chat";
@@ -60,7 +59,7 @@ const MessageSection = () => {
               </div>
             </div>
           ))}
-      <TypingIndicator />
+      {/* <TypingIndicator /> */}
       <div ref={chatEndRef} />
     </ScrollArea>
   );
