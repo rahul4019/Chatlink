@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { addMessage } from "./features/chat/chatSlice";
+import { addMessage, toggleTypingStatus } from "./features/chat/chatSlice";
 import { Message } from "./types/chat";
 import { AppDispatch } from "./app/store";
 

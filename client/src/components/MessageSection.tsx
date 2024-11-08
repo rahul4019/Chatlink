@@ -19,7 +19,7 @@ const MessageSection = () => {
   // scrolls whenever there is change in the chats
   useEffect(() => {
     scrollToBottom();
-  }, [chats]);
+  }, [chats, selectedUser?.isTyping]);
 
   return (
     <ScrollArea className="flex-1 p-4">
