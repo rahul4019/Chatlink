@@ -4,6 +4,7 @@ import { Skeleton } from "./ui/skeleton";
 import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/types/chat";
 import { useEffect, useRef } from "react";
+import TypingIndicator from "./TypingIndicator";
 
 const MessageSection = () => {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +60,7 @@ const MessageSection = () => {
               </div>
             </div>
           ))}
+      <TypingIndicator />
       <div ref={chatEndRef} />
     </ScrollArea>
   );
