@@ -1,9 +1,9 @@
-import { User } from "@/types/user";
+import { SelectedUser } from "@/types/user";
 import { Message } from "@/types/chat";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ChatSliceProps {
-  selectedUser: null | Omit<User, "email">;
+  selectedUser: null | SelectedUser;
   chats: Message[];
   loading: boolean;
   error: null | string;
@@ -20,14 +20,14 @@ const chatSlice = createSlice({
   name: "chatSelected",
   initialState,
   reducers: {
-    setSelectedUser(state, action: PayloadAction<Omit<User, "email">>) {
-      state.selectedUser = action.payload;
+    setSelectedUser(state, action: PayloadAction<SelectedUser>) {
+      state.selectedUser = { ...action.payload, isTyping: false };
     },
     getChatsStart(state) {
       state.loading = true;
       state.error = null;
     },
-    getChatsSuccess(state, action: PayloadAction<any>) {
+    getChatsSuccess(state, action: PayloadAction<Message[]>) {
       state.loading = false;
       state.chats = action.payload;
     },
@@ -35,9 +35,13 @@ const chatSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    addMessage(state, action: PayloadAction<any>) {
-      console.log("payload: ", action.payload);
+    addMessage(state, action: PayloadAction<Message>) {
       state.chats.push(action.payload);
+    },
+    toggleTypingStatus(state, action: PayloadAction<boolean>) {
+      if (state.selectedUser) {
+        state.selectedUser.isTyping = action.payload;
+      }
     },
   },
 });
@@ -48,6 +52,7 @@ export const {
   getChatsSuccess,
   getChatsFailure,
   addMessage,
+  toggleTypingStatus,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

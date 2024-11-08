@@ -1,12 +1,12 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import MessageSection from "@/components/MessageSection";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CircleUserRound, MenuIcon, SendIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import ChatInput from "./ChatInput";
+import { useEffect } from "react";
 
 type ChatSectionprops = {
   isMobile: boolean;

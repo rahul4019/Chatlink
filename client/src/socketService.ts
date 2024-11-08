@@ -17,8 +17,6 @@ export const createSocketConnection = (
   }); // sending userId on connection to maintain online users on backend
 
   socket.on("chat:receiveMessage", (message: Message) => {
-    console.log("receivedMessage: ", message);
-
     dispatch(addMessage(message));
   });
 
@@ -38,13 +36,25 @@ export const sendMessage = (data: sendMessageArgs, dispatch: AppDispatch) => {
   }
 
   const message = {
+    id: 1, // todo: fix this temprory solution
     sender_id: senderId,
     receiver_id: receiverId,
     message_text: messageText,
     sent_at: new Date().toISOString(),
+    is_deleted: false,
   };
 
-  console.log("new message: ", message);
-
   dispatch(addMessage(message));
+};
+
+interface typingIndicatorArgs {
+  senderId: string;
+  receiverId: string;
+  isTyping: boolean;
+}
+
+export const typingIndicator = (data: typingIndicatorArgs) => {
+  if (socket) {
+    socket.emit("chat:typingIndicator", data);
+  }
 };

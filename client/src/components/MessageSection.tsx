@@ -8,7 +8,9 @@ import TypingIndicator from "./TypingIndicator";
 const MessageSection = () => {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const { user } = useAppSelector((state) => state.auth);
-  const { chats, loading } = useAppSelector((state) => state.chat);
+  const { selectedUser, chats, loading } = useAppSelector(
+    (state) => state.chat,
+  );
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -59,7 +61,9 @@ const MessageSection = () => {
               </div>
             </div>
           ))}
-      {/* <TypingIndicator /> */}
+
+      {selectedUser?.isTyping && <TypingIndicator />}
+
       <div ref={chatEndRef} />
     </ScrollArea>
   );

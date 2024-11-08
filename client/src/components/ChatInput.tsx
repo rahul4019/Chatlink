@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { sendMessage } from "@/socketService";
+import { sendMessage, typingIndicator } from "@/socketService";
 import { Button } from "./ui/button";
 import { SendIcon } from "lucide-react";
 
@@ -18,6 +18,19 @@ const ChatInput = ({ selectedUser }: ChatInputProps) => {
   const [message, setMessage] = useState("");
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+  const { socket } = useAppSelector((state) => state.socket);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("chat:typing", (data) => {
+        if (data.isTyping) {
+          console.log(`${data.senderId} is typing...`);
+        } else {
+          console.log(`${data.senderId} stopped typing.`);
+        }
+      });
+    }
+  }, []);
 
   const send = () => {
     // remove trailing spaces
@@ -50,6 +63,12 @@ const ChatInput = ({ selectedUser }: ChatInputProps) => {
 
   const handleTyping = () => {
     setTyping(true);
+    const data = {
+      senderId: user?.id!,
+      receiverId: selectedUser.id,
+      isTyping: true,
+    };
+    typingIndicator(data);
     // Placeholder for typing indicator logic
   };
 

@@ -7,3 +7,7 @@ export interface User {
   is_online?: boolean;
   last_seen?: Date;
 }
+
+export interface SelectedUser extends Omit<User, "email"> {
+  isTyping: boolean;
+}

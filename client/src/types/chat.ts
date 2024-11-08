@@ -3,7 +3,7 @@ export interface LatestChat {
   sender_id: string;
   receiver_id: string;
   message_text: string;
-  sent_at: Date;
+  sent_at: string;
   is_delete: boolean;
   username: string;
   profile_picture: string;
@@ -11,10 +11,10 @@ export interface LatestChat {
 }
 
 export interface Message {
-  id: 23;
-  is_deleted: false;
+  id: number;
+  is_deleted: boolean;
   message_text: string;
   receiver_id: string;
   sender_id: string;
-  sent_at: Date;
+  sent_at: string;
 }
