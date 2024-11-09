@@ -9,5 +9,6 @@ export interface User {
 }
 
 export interface SelectedUser extends Omit<User, "email"> {
-  isTyping: boolean;
+  isTyping?: boolean;
+  isOnline?: boolean;
 }

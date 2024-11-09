@@ -40,7 +40,9 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
               <h2 className="text-lg font-semibold">
                 {selectedUser?.username}
               </h2>
-              <div className="text-green-500 text-sm font-medium">Online</div>
+              {selectedUser?.isOnline && (
+                <div className="text-green-500 text-sm font-medium">Online</div>
+              )}
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import {
   addMessage,
   selectedUserInfo,
+  toggleOnlineStatus,
   toggleTypingStatus,
 } from "./features/chat/chatSlice";
 import { Message } from "./types/chat";
@@ -36,6 +37,17 @@ export const createSocketConnection = (
         dispatch(toggleTypingStatus(true));
       } else {
         dispatch(toggleTypingStatus(false));
+      }
+    }
+  });
+
+  // listen for user's online status
+  socket.on("chat:online", (data) => {
+    const selectedUser = selectedUserInfo(store.getState());
+
+    if (data.receiverId === selectedUser?.id) {
+      if (data.online) {
+        dispatch(toggleOnlineStatus(data.online));
       }
     }
   });
@@ -75,5 +87,16 @@ interface typingIndicatorArgs {
 export const typingIndicator = (data: typingIndicatorArgs) => {
   if (socket) {
     socket.emit("chat:typingIndicator", data);
+  }
+};
+
+interface userOnlineArgs {
+  senderId: string;
+  receiverId: string;
+}
+
+export const userOnline = (data: userOnlineArgs) => {
+  if (socket) {
+    socket.emit("chat:userOnline", data);
   }
 };

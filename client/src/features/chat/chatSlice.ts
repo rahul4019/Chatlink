@@ -21,7 +21,11 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     setSelectedUser(state, action: PayloadAction<SelectedUser>) {
-      state.selectedUser = { ...action.payload, isTyping: false };
+      state.selectedUser = {
+        ...action.payload,
+        isTyping: false,
+        isOnline: false,
+      };
     },
     getChatsStart(state) {
       state.loading = true;
@@ -43,6 +47,12 @@ const chatSlice = createSlice({
         state.selectedUser.isTyping = action.payload;
       }
     },
+    toggleOnlineStatus(state, action: PayloadAction<boolean>) {
+      console.log(action.payload);
+      if (state.selectedUser) {
+        state.selectedUser.isOnline = action.payload;
+      }
+    },
   },
 });
 
@@ -56,6 +66,7 @@ export const {
   getChatsFailure,
   addMessage,
   toggleTypingStatus,
+  toggleOnlineStatus,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

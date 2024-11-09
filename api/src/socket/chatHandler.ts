@@ -78,6 +78,10 @@ export const chatHandler = (io: Server) => {
       onlineUsers[senderId].forEach((socketId) => {
         io.to(socketId).emit("chat:online", { receiverId, online: true });
       });
+    } else {
+      onlineUsers[senderId].forEach((socketId) => {
+        io.to(socketId).emit("chat:online", { receiverId, online: false });
+      });
     }
   };
 

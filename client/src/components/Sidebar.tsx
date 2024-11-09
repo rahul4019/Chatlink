@@ -26,8 +26,9 @@ import { getUserChatHistory } from "@/features/user/userThunk";
 import { Skeleton } from "./ui/skeleton";
 import { toggleChatSelection } from "@/features/user/userSlice";
 import { setSelectedUser } from "@/features/chat/chatSlice";
-import { User } from "@/types/user";
+import { SelectedUser } from "@/types/user";
 import { getChats } from "@/features/chat/chatThunk";
+import { userOnline } from "@/socketService";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
@@ -62,7 +63,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
       user?.id === chat.sender_id ? chat.receiver_id : chat.sender_id;
 
     // user object for the selectedUser
-    const selectedUser: Omit<User, "email"> = {
+    const selectedUser: SelectedUser = {
       id: selectedUserId,
       username: chat.username,
       profilePicture: chat.profile_picture,
@@ -70,6 +71,9 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
 
     // set the profile of the selected user
     dispatch(setSelectedUser(selectedUser));
+
+    // get the user's online status
+    userOnline({ senderId: user?.id!, receiverId: selectedUser.id });
 
     // get all the chats between the logged in user and selected user
     dispatch(getChats({ userId1: user?.id!, userId2: selectedUser.id }));
