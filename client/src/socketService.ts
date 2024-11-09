@@ -1,5 +1,9 @@
 import { io, Socket } from "socket.io-client";
-import { addMessage, toggleTypingStatus } from "./features/chat/chatSlice";
+import {
+  addMessage,
+  selectedUserInfo,
+  toggleTypingStatus,
+} from "./features/chat/chatSlice";
 import { Message } from "./types/chat";
 import { AppDispatch, store } from "./app/store";
 
@@ -23,10 +27,9 @@ export const createSocketConnection = (
 
   // listen for typing indicator
   socket.on("chat:typing", (data) => {
-    console.log("typing data: ", data);
-    console.log("selected user: ", store.getState().chat.selectedUser);
+    // update the typing status only when  the selected user's id and received senderId matches.
 
-    const selectedUser = store.getState().chat.selectedUser;
+    const selectedUser = selectedUserInfo(store.getState());
 
     if (data.senderId === selectedUser?.id) {
       if (data.isTyping) {
@@ -52,7 +55,7 @@ export const sendMessage = (data: sendMessageArgs, dispatch: AppDispatch) => {
   }
 
   const message = {
-    id: 1, // todo: fix this temprory solution
+    id: 1, // TODO: fix this temprory solution
     sender_id: senderId,
     receiver_id: receiverId,
     message_text: messageText,

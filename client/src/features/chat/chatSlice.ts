@@ -46,8 +46,8 @@ const chatSlice = createSlice({
   },
 });
 
-export const selectedUserInfo = (state: { chatSelected: ChatSliceProps }) =>
-  state.chatSelected.selectedUser;
+export const selectedUserInfo = (state: { chat: ChatSliceProps }) =>
+  state.chat.selectedUser;
 
 export const {
   setSelectedUser,
