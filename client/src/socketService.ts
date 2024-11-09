@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { addMessage, toggleTypingStatus } from "./features/chat/chatSlice";
 import { Message } from "./types/chat";
-import { AppDispatch } from "./app/store";
+import { AppDispatch, store } from "./app/store";
 
 let socket: Socket | null = null;
 
@@ -16,10 +16,26 @@ export const createSocketConnection = (
     },
   }); // sending userId on connection to maintain online users on backend
 
+  // listen for message
   socket.on("chat:receiveMessage", (message: Message) => {
     dispatch(addMessage(message));
   });
 
+  // listen for typing indicator
+  socket.on("chat:typing", (data) => {
+    console.log("typing data: ", data);
+    console.log("selected user: ", store.getState().chat.selectedUser);
+
+    const selectedUser = store.getState().chat.selectedUser;
+
+    if (data.senderId === selectedUser?.id) {
+      if (data.isTyping) {
+        dispatch(toggleTypingStatus(true));
+      } else {
+        dispatch(toggleTypingStatus(false));
+      }
+    }
+  });
   return socket;
 };
 

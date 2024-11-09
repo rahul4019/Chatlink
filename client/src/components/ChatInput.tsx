@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { sendMessage, typingIndicator } from "@/socketService";
 import { Button } from "./ui/button";
 import { SendIcon } from "lucide-react";
-import { toggleTypingStatus } from "@/features/chat/chatSlice";
 
 type ChatInputProps = {
   selectedUser: {
@@ -22,20 +21,7 @@ const ChatInput = ({ selectedUser }: ChatInputProps) => {
   const { socket } = useAppSelector((state) => state.socket);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("chat:typing", (data) => {
-        if (data.isTyping) {
-          dispatch(toggleTypingStatus(true));
-          console.log(`${data.senderId} is typing...`);
-        } else {
-          dispatch(toggleTypingStatus(false));
-          console.log(`${data.senderId} stopped typing.`);
-        }
-      });
-    }
-  }, [socket, dispatch]);
-
+  // making the sendMessage socket call
   const send = () => {
     if (message.trim()) {
       const data = {
@@ -58,6 +44,7 @@ const ChatInput = ({ selectedUser }: ChatInputProps) => {
     }
   };
 
+  // checks for the mouse click on send icon or ENTER press then calls the send funcion
   const handleSendMessage = (
     e:
       | React.KeyboardEvent<HTMLTextAreaElement>
@@ -74,7 +61,9 @@ const ChatInput = ({ selectedUser }: ChatInputProps) => {
     }
   };
 
+  // handles typing indicator logic
   const handleTyping = () => {
+    // only calls when user is not typing
     if (!typing) {
       setTyping(true);
       const data = {
@@ -85,8 +74,10 @@ const ChatInput = ({ selectedUser }: ChatInputProps) => {
       typingIndicator(data);
     }
 
+    // clear previous timeout
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 
+    // stop typing indicator if user goes inactive for 2 seconds
     typingTimeoutRef.current = setTimeout(() => {
       setTyping(false);
       const data = {
