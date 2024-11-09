@@ -45,6 +45,12 @@ export const initSocket = (httpServer: HttpServer) => {
         delete onlineUsers[userId];
       }
 
+      for (let i in onlineUsers) {
+        onlineUsers[i].forEach((socketId) => {
+          io.to(socketId).emit("chat:offline", { userId });
+        });
+      }
+
       console.log(`user: ${userId} disconnected`);
     });
 

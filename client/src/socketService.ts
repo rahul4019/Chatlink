@@ -51,6 +51,17 @@ export const createSocketConnection = (
       }
     }
   });
+
+  socket.on("chat:offline", (data) => {
+    const selectedUser = selectedUserInfo(store.getState());
+
+    console.log("offline data: ", data);
+
+    if (data.userId === selectedUser?.id) {
+      dispatch(toggleOnlineStatus(false));
+    }
+  });
+
   return socket;
 };
 
