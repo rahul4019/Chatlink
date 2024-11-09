@@ -14,6 +14,11 @@ interface typingIndicatorPayload {
   isTyping: boolean;
 }
 
+interface userOnlinePayload {
+  senderId: string;
+  receiverId: string;
+}
+
 export const chatHandler = (io: Server) => {
   const sendMessage = async (payload: MessagePayload) => {
     const { senderId, receiverId, messageText } = payload;
@@ -65,8 +70,20 @@ export const chatHandler = (io: Server) => {
     }
   };
 
+  const userOnline = (payload: userOnlinePayload) => {
+    const { senderId, receiverId } = payload;
+
+    // check if the other user is online
+    if (onlineUsers[receiverId]) {
+      onlineUsers[senderId].forEach((socketId) => {
+        io.to(socketId).emit("chat:online", { receiverId, online: true });
+      });
+    }
+  };
+
   return {
     sendMessage,
     typingIndicator,
+    userOnline,
   };
 };

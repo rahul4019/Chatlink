@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CircleUserRound, MenuIcon, SendIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useAppSelector } from "@/app/hooks";
 import ChatInput from "./ChatInput";
-import { useEffect } from "react";
 
 type ChatSectionprops = {
   isMobile: boolean;
@@ -30,13 +29,20 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
               <MenuIcon className="h-5 w-5" />
             </Button>
           )}
-          <Avatar>
-            <AvatarImage src={selectedUser?.profilePicture} alt="avatar" />
-            <AvatarFallback>
-              <CircleUserRound size={35} className="text-accent" />
-            </AvatarFallback>
-          </Avatar>
-          <h2 className="text-lg font-semibold">{selectedUser?.username}</h2>
+          <div className="flex gap-3">
+            <Avatar>
+              <AvatarImage src={selectedUser?.profilePicture} alt="avatar" />
+              <AvatarFallback>
+                <CircleUserRound size={35} className="text-accent" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col justify-center gap">
+              <h2 className="text-lg font-semibold">
+                {selectedUser?.username}
+              </h2>
+              <div className="text-green-500 text-sm font-medium">Online</div>
+            </div>
+          </div>
         </div>
 
         <div className="flex gap-2">
