@@ -27,6 +27,12 @@ export const initSocket = (httpServer: HttpServer) => {
       } else {
         onlineUsers[userId] = [socket.id]; // for first connection by the user
       }
+
+      for (let i in onlineUsers) {
+        onlineUsers[i].forEach((socketId) => {
+          io.to(socketId).emit("chat:onlineStatus", { userId });
+        });
+      }
     }
 
     console.log(`userId: ${userId} connected with socket ID: ${socket.id}`);
