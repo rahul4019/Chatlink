@@ -1,4 +1,4 @@
-FROM node:23-alpine as builder
+FROM node:23-alpine AS builder
 
 WORKDIR /app
 
@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 4173 
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "preview" ]
