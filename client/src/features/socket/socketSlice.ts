@@ -4,10 +4,14 @@ import { AppDispatch } from "@/app/store";
 import { createSocketConnection } from "@/socketService";
 
 interface SocketState {
-  socket: Socket | null;
+  isConnected: boolean;
+  socket: null;
 }
 
+let socketInstance: Socket | null = null;
+
 const initialState: SocketState = {
+  isConnected: false,
   socket: null,
 };
 
@@ -16,12 +20,19 @@ const socketSlice = createSlice({
   initialState,
   reducers: {
     setSocket(state, action: PayloadAction<Socket | null>) {
-      state.socket = action.payload;
+      if (action.payload) {
+        socketInstance = action.payload;
+        state.isConnected = true;
+      } else {
+        socketInstance = null;
+        state.isConnected = false;
+      }
     },
     disconnectSocket(state) {
-      if (state.socket) {
-        state.socket.disconnect();
-        state.socket = null;
+      if (socketInstance) {
+        socketInstance.disconnect();
+        socketInstance = null;
+        state.isConnected = false;
       }
     },
   },
@@ -34,5 +45,6 @@ export const initializeSocket =
   };
 
 export const { setSocket, disconnectSocket } = socketSlice.actions;
-
 export default socketSlice.reducer;
+
+export const getSocket = (): Socket | null => socketInstance;

@@ -2,7 +2,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import MessageSection from "@/components/MessageSection";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CircleUserRound, MenuIcon, SendIcon } from "lucide-react";
+import { CircleUserRound, MenuIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAppSelector } from "@/app/hooks";
 import ChatInput from "./ChatInput";
@@ -31,7 +31,7 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
           )}
           <div className="flex gap-3">
             <Avatar>
-              <AvatarImage src={selectedUser?.profilePicture} alt="avatar" />
+              <AvatarImage src={selectedUser?.profile_picture} alt="avatar" />
               <AvatarFallback>
                 <CircleUserRound size={35} className="text-accent" />
               </AvatarFallback>
@@ -62,7 +62,7 @@ const ChatSection = ({ isMobile, setSidebarOpen }: ChatSectionprops) => {
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="p-4 border-t border-border bg-card"
       >
-        <ChatInput selectedUser={selectedUser} />
+        {selectedUser && <ChatInput selectedUser={selectedUser} />}
       </motion.div>
     </div>
   );

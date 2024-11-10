@@ -9,7 +9,7 @@ type ChatInputProps = {
   selectedUser: {
     id: string;
     username: string;
-    profilePicture: string;
+    profile_picture?: string;
   };
 };
 

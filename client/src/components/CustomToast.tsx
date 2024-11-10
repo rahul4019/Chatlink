@@ -1,4 +1,3 @@
-import React, { ReactNode } from "react";
 import { toast } from "sonner";
 import { CheckCircle, AlertCircle, XCircle, InfoIcon } from "lucide-react";
 
@@ -29,7 +28,7 @@ export const showCustomToast = ({ content, variant }: showCustomToast) => {
     }
   };
 
-  const variantSyle = variantProps(variant);
+  variantProps(variant);
 
   toast.custom(() => (
     <div className="bg-background p-3 rounded-lg shadow-lg">

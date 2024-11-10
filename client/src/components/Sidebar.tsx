@@ -66,7 +66,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
     const selectedUser: SelectedUser = {
       id: selectedUserId,
       username: chat.username,
-      profilePicture: chat.profile_picture,
+      profile_picture: chat.profile_picture,
     };
 
     // set the profile of the selected user
