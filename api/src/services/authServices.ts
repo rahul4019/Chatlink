@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import {
   createUser,
   emailExist,
+  userNameExist,
   getUserDetails,
   getUserDetailsById,
 } from "../models/userModel";
@@ -41,6 +42,13 @@ export const registerUser = async (
 
   if (userExist) {
     throw new CustomError("Email already exists", 400);
+  }
+
+  // check if username already exist
+  const usernameExist = await userNameExist(username);
+
+  if (usernameExist) {
+    throw new CustomError("Username already exists", 400);
   }
 
   // password hashing

@@ -9,7 +9,6 @@ import {
   refreshAccessToken,
   registerUser,
 } from "../services/authServices";
-import CustomError from "../utils/customError";
 import { Tokens } from "../types/user";
 
 export const userRegistration = async (
@@ -33,7 +32,7 @@ export const userRegistration = async (
   const { email, password, username } = result.data;
 
   try {
-    const newUser = await registerUser(email, password, username);
+    await registerUser(email, password, username);
 
     const response: ApiResponse = {
       success: true,
