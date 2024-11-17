@@ -19,8 +19,7 @@ export default function Chat() {
 
   useEffect(() => {
     const userId = user?.id!; // ! asserts that user.id can't be undefiend
-    dispatch(initializeSocket("http://localhost:8000", userId));
-
+    dispatch(initializeSocket(import.meta.env.VITE_BASE_URL, userId));
     return () => {
       dispatch(disconnectSocket()); // clean up socket on unmount
     };
