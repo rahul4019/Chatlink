@@ -2,11 +2,8 @@ import { store } from "@/app/store";
 import { logoutUser } from "@/features/auth/authThunk";
 import axios from "axios";
 
-console.log("BASE_URL: ", `${import.meta.env.VITE_BASE_URL}/api/v1`);
-
 export const axiosInstance = axios.create({
-  // baseURL: `${import.meta.env.VITE_BASE_URL}/api/v1`,
-  baseURL: `/api/v1`,
+  baseURL: `http://localhost/api/v1`,
   withCredentials: true,
 });
 

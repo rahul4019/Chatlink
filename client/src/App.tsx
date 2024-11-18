@@ -11,6 +11,8 @@ import { setUser } from "./features/auth/authSlice";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 
+console.log("url1");
+
 function App() {
   const dispatch = useAppDispatch();
 
