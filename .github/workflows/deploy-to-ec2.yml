@@ -30,8 +30,8 @@ jobs:
     # Step 4: Build and Push Docker Images to Docker Hub
     - name: Build and Push Docker Images
       run: |
-        docker compose -f docker-compose.yml build
-        docker compose -f docker-compose.yml push 
+        docker-compose -f docker-compose.yml build
+        docker-compose -f docker-compose.yml push 
 
     # Step 5: Prepare EC2 Instance
     - name: Prepare EC2 Instance
@@ -87,9 +87,9 @@ jobs:
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
           cd ~/chatlink
-          docker compose pull
-          docker compose down
-          docker compose up -d
+          docker-compose pull
+          docker-compose down
+          docker-compose up -d
 
     # Step 10: Verify Deployment
     - name: Verify Deployment
@@ -100,4 +100,4 @@ jobs:
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
           docker ps
-          docker compose ps
+          docker-compose ps
