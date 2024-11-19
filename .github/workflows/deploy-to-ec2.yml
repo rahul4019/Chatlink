@@ -4,6 +4,7 @@ on:
     branches:
       - main
   workflow_dispatch:
+
 jobs:
   build-and-deploy:
     name: Build and Deploy
@@ -11,20 +12,18 @@ jobs:
     steps: 
     # Step 1: Checkout the repo code
     - name: Checkout Code
-      uses: actions/checkout@v4  # Updated to latest version
+      uses: actions/checkout@v4
 
-    # Step 2: Log into Docker Hub
+    # Step 2: Set up Docker Buildx for caching and improved builds
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Step 3: Log into Docker Hub
     - name: Log in to Docker Hub
-      uses: docker/login-action@v3  # Updated to latest version
+      uses: docker/login-action@v3
       with: 
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    # Step 3: Install Docker Compose
-    - name: Install Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker-compose
 
     # Step 4: Build and Push Docker Images to Docker Hub
     - name: Build and Push Docker Images
@@ -32,31 +31,52 @@ jobs:
         docker-compose -f docker-compose.yml build
         docker-compose -f docker-compose.yml push 
 
-    # Step 5: Copy files to EC2
-    - name: Copy Files to EC2
-      uses: appleboy/scp-action@v0.1.7  # Updated to latest version
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        source: "docker-compose.yml,nginx/" 
-        target: ~/chatlink/
-        strip_components: 1  # Remove top-level directory
-        overwrite: true
-        debug: true
-
-    # Step 6: Fix Permissions on Copied Files
-    - name: Fix Permissions
-      uses: appleboy/ssh-action@v0.1.10  # Updated to latest version
+    # Step 5: Prepare EC2 Instance
+    - name: Prepare EC2 Instance
+      uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
-          sudo chown -R ${{ secrets.EC2_USER }}:${{ secrets.EC2_USER }} ~/chatlink
-          ls -la ~/chatlink
+          mkdir -p ~/chatlink
+          rm -rf ~/chatlink/nginx
+          rm -f ~/chatlink/docker-compose.yml
 
-    # Step 7: Deploy the Application on the EC2 Instance
+    # Step 6: Copy docker-compose file
+    - name: Copy docker-compose file
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        source: "docker-compose.yml"
+        target: ~/chatlink/
+        overwrite: true
+
+    # Step 7: Copy nginx directory
+    - name: Copy nginx directory
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        source: "nginx/"
+        target: ~/chatlink/
+        overwrite: true
+
+    # Step 8: Verify copied files
+    - name: Verify Copied Files
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          ls -la ~/chatlink
+          ls -la ~/chatlink/nginx
+
+    # Step 9: Deploy the Application on the EC2 Instance
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.10
       with:
@@ -69,7 +89,7 @@ jobs:
           docker-compose down
           docker-compose up -d
 
-    # Optional: Add a health check step
+    # Step 10: Verify Deployment
     - name: Verify Deployment
       uses: appleboy/ssh-action@v0.1.10
       with:
