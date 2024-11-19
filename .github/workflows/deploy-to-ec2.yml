@@ -35,15 +35,7 @@ jobs:
         docker-compose -f docker-compose.yml build
         docker-compose -f docker-compose.yml push 
 
-    # Step 5: Debug to verify file existence
-    - name: Debug Workspace
-      run: |
-        echo "Root directory contents:"
-        ls -la
-        echo "nginx directory contents:"
-        ls -la nginx/
-
-    # Step 6: Copy Files to EC2
+    # Step 5: Copy docker-compose.yml and nginx directory to EC2
     - name: Copy Files to EC2
       uses: appleboy/scp-action@v0.1.5
       with:
@@ -54,8 +46,9 @@ jobs:
           docker-compose.yml
           nginx/
         target: ~/chatlink/
+        debug: true
 
-    # Step 7: Deploy the Application on the EC2 Instance
+    # Step 6: Deploy the Application on the EC2 Instance
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.7
       with:
