@@ -90,7 +90,7 @@ const Home = () => {
         <section className="text-center mb-8 max-w-4xl">
           <AnimatedElement>
             <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6">
-              Connect Instantly with ChatLink
+              Connect Instantly with ChatLinks
             </h1>
           </AnimatedElement>
           <AnimatedElement className="delay-300">
