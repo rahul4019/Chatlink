@@ -29,20 +29,20 @@ services:
       context: ./api
     image: rahul4019/chatlink:api-latest
     environment:
-      - PORT=${PORT}
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
-      - ACCESS_TOKEN_EXPIRY=${ACCESS_TOKEN_EXPIRY}
-      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
-      - REFRESH_TOKEN_EXPIRY=${REFRESH_TOKEN_EXPIRY}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - PORT
+      - DB_HOST
+      - DB_NAME
+      - DB_PORT
+      - DB_USER
+      - DB_PASSWORD
+      - ACCESS_TOKEN_SECRET
+      - ACCESS_TOKEN_EXPIRY
+      - REFRESH_TOKEN_SECRET
+      - REFRESH_TOKEN_EXPIRY
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_REGION
+      - AWS_S3_BUCKET_NAME
     ports:
       - "8000"
 
