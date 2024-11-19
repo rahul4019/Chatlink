@@ -44,7 +44,6 @@ jobs:
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         source: |
           docker-compose.yml
-          nginx/
         target: ~/chatlink/
         debug: true
 
