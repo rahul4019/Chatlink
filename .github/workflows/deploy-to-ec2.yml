@@ -1,24 +1,21 @@
 name: ChatLink CI/CD Pipeline
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
-
     steps: 
     # Step 1: Checkout the repo code
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4  # Updated to latest version
 
     # Step 2: Log into Docker Hub
     - name: Log in to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3  # Updated to latest version
       with: 
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -35,21 +32,33 @@ jobs:
         docker-compose -f docker-compose.yml build
         docker-compose -f docker-compose.yml push 
 
-    # Step 5: Copy docker-compose.yml and nginx directory to EC2
+    # Step 5: Copy files to EC2
     - name: Copy Files to EC2
-      uses: appleboy/scp-action@v0.1.5
+      uses: appleboy/scp-action@v0.1.7  # Updated to latest version
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        source: |
-          docker-compose.yml
+        source: "docker-compose.yml,nginx/" 
         target: ~/chatlink/
+        strip_components: 1  # Remove top-level directory
+        overwrite: true
         debug: true
 
-    # Step 6: Deploy the Application on the EC2 Instance
+    # Step 6: Fix Permissions on Copied Files
+    - name: Fix Permissions
+      uses: appleboy/ssh-action@v0.1.10  # Updated to latest version
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          sudo chown -R ${{ secrets.EC2_USER }}:${{ secrets.EC2_USER }} ~/chatlink
+          ls -la ~/chatlink
+
+    # Step 7: Deploy the Application on the EC2 Instance
     - name: Deploy to EC2
-      uses: appleboy/ssh-action@v0.1.7
+      uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
@@ -60,3 +69,13 @@ jobs:
           docker-compose down
           docker-compose up -d
 
+    # Optional: Add a health check step
+    - name: Verify Deployment
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          docker ps
+          docker-compose ps
