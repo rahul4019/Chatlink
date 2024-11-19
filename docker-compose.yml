@@ -1,47 +1,71 @@
-services:
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      - client-build:/usr/share/nginx/html
-    ports:
-      - "80:80"
-    depends_on:
-      - client
-      - api
+name: ChatLink CI/CD Pipeline
 
-  client:
-    build:
-      context: ./client
-    image: rahul4019/chatlink:client-latest
-    environment:
-      - BASE_URL=${VITE_BASE_URL}
-    volumes:
-      - client-build:/usr/share/nginx/html  # Share built files with nginx
-    expose:
-      - "80"
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-  api:
-    build:
-      context: ./api
-    image: rahul4019/chatlink:api-latest
-    environment:
-      - PORT=${PORT}
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
-      - ACCESS_TOKEN_EXPIRY=${ACCESS_TOKEN_EXPIRY}
-      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
-      - REFRESH_TOKEN_EXPIRY=${REFRESH_TOKEN_EXPIRY}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
-    ports:
-      - "8000" 
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
 
-volumes:
-  client-build:  # Define the shared volume
+    steps: 
+    # step 1: checkout the repo code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # step 2: log into dockerhub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with: 
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # step 3: install docker compose 
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    # step 4: build and push docker image to DockerHub
+    - name: Build and Push Docker image
+      run: |
+        docker-compose -f docker-compose.yml build
+        docker-compose -f docker-compose.yml push 
+
+    # step 5: deploy the application on the EC2 instance
+    - name: Deploy to EC2 
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          # Set environment variables
+          echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" >> ~/.bashrc
+          echo "PORT=${{ secrets.PORT }}" >> ~/.bashrc
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> ~/.bashrc
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> ~/.bashrc
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> ~/.bashrc
+          echo "DB_USER=${{ secrets.DB_USER }}" >> ~/.bashrc
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ~/.bashrc
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> ~/.bashrc
+          echo "ACCESS_TOKEN_EXPIRY=${{ secrets.ACCESS_TOKEN_EXPIRY }}" >> ~/.bashrc
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> ~/.bashrc
+          echo "REFRESH_TOKEN_EXPIRY=${{ secrets.REFRESH_TOKEN_EXPIRY }}" >> ~/.bashrc
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.bashrc
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.bashrc
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> ~/.bashrc
+          echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> ~/.bashrc
+          
+          # Reload the environment variables
+          source ~/.bashrc
+
+          # Pull the latest Docker images and restart containers
+          cd ~/test
+          docker-compose pull
+          docker-compose down 
+          docker-compose up -d
+
