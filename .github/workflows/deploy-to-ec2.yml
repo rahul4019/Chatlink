@@ -18,7 +18,7 @@ jobs:
     - name: Install Docker Compose
       run: |
         sudo apt-get update
-        sudo apt-get install -y docker-compose-plugin
+        sudo apt-get install -y docker-compose
 
     # Step 3: Log into Docker Hub
     - name: Log in to Docker Hub
