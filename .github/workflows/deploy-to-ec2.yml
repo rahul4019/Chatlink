@@ -27,14 +27,19 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    # step 3: install docker compose 
+    - name: Install Docker compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
 
-    # step 3: build and push docker image on dockerhub
+    # step 4: build and push docker image on dockerhub
     - name: Build and Push Docker image
       run: |
         docker-compose -f docker-compose.yml build
-        docker-compose -f docker-compose.yml push
+        docker-compose -f docker-compose.yml push 
 
-    # step 4: deploy the applicaton on the ec2 instance
+    # step 5: deploy the applicaton on the ec2 instance
     - name: Deploy to EC2 
       uses: appleboy/ssh-action@v0.1.7
       with:
