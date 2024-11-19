@@ -19,7 +19,7 @@ export default function Chat() {
 
   useEffect(() => {
     const userId = user?.id!; // ! asserts that user.id can't be undefiend
-    dispatch(initializeSocket("http://localhost", userId));
+    dispatch(initializeSocket("https://chatlink.uk.to", userId));
     return () => {
       dispatch(disconnectSocket()); // clean up socket on unmount
     };

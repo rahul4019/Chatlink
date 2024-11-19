@@ -3,7 +3,7 @@ import { logoutUser } from "@/features/auth/authThunk";
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: `http://localhost/api/v1`,
+  baseURL: `https://chatlink.uk.to/api/v1`,
   withCredentials: true,
 });
 
