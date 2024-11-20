@@ -12,8 +12,6 @@ services:
     depends_on:
       - client
       - api
-    networks:
-      - app-network
 
   client:
     build:
@@ -25,8 +23,6 @@ services:
       - client-build:/usr/share/nginx/html
     expose:
       - "80"
-    networks:
-      - app-network
 
   api:
     build:
@@ -50,8 +46,6 @@ services:
       - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
     expose:
       - "8000"
-    networks:
-      - app-network
 
 volumes:
   client-build:
