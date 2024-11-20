@@ -1,3 +1,4 @@
+# .github/workflows/deploy-to-ec2.yml
 name: ChatLink CI/CD Pipeline
 on:
   push:
@@ -10,110 +11,97 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     steps: 
-    # Step 1: Checkout the repo code
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    # Step 2: Install Docker Compose
-    - name: Install Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker-compose
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
-    # Step 3: Log into Docker Hub
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v3
-      with: 
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with: 
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # Step 4: Build and Push Docker Images to Docker Hub
-    - name: Build and Push Docker Images
-      run: |
-        docker-compose -f docker-compose.yml build
-        docker-compose -f docker-compose.yml push 
+      - name: Build and Push Docker Images
+        env:
+          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+        run: |
+          VITE_BASE_URL=$VITE_BASE_URL docker-compose build
+          docker-compose push
 
-    # Step 5: Prepare EC2 Instance
-    - name: Prepare EC2 Instance
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        script: |
-          mkdir -p ~/chatlink
-          rm -rf ~/chatlink/nginx
-          rm -f ~/chatlink/docker-compose.yml
+      - name: Prepare EC2 Instance
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p ~/chatlink
+            rm -rf ~/chatlink/nginx
+            rm -f ~/chatlink/docker-compose.yml
 
-    # Step 6: Copy docker-compose file
-    - name: Copy docker-compose file
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        source: "docker-compose.yml"
-        target: ~/chatlink/
-        overwrite: true
+      - name: Copy docker-compose file and nginx config
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          source: "docker-compose.yml,nginx/"
+          target: ~/chatlink/
+          overwrite: true
 
-    # Step 7: Copy nginx directory
-    - name: Copy nginx directory
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        source: "nginx/"
-        target: ~/chatlink/
-        overwrite: true
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          envs: |
+            VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}
+            PORT=${{ secrets.PORT }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_PORT=${{ secrets.DB_PORT }}
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
+            ACCESS_TOKEN_EXPIRY=${{ secrets.ACCESS_TOKEN_EXPIRY }}
+            REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}
+            REFRESH_TOKEN_EXPIRY=${{ secrets.REFRESH_TOKEN_EXPIRY }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
+          script: |
+            cd ~/chatlink
+            docker-compose pull
+            docker-compose down
+            VITE_BASE_URL="$VITE_BASE_URL" \
+            PORT="$PORT" \
+            DB_HOST="$DB_HOST" \
+            DB_NAME="$DB_NAME" \
+            DB_PORT="$DB_PORT" \
+            DB_USER="$DB_USER" \
+            DB_PASSWORD="$DB_PASSWORD" \
+            ACCESS_TOKEN_SECRET="$ACCESS_TOKEN_SECRET" \
+            ACCESS_TOKEN_EXPIRY="$ACCESS_TOKEN_EXPIRY" \
+            REFRESH_TOKEN_SECRET="$REFRESH_TOKEN_SECRET" \
+            REFRESH_TOKEN_EXPIRY="$REFRESH_TOKEN_EXPIRY" \
+            AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
+            AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
+            AWS_REGION="$AWS_REGION" \
+            AWS_S3_BUCKET_NAME="$AWS_S3_BUCKET_NAME" \
+            docker-compose up -d
 
-    # Step 8: Verify copied files
-    - name: Verify Copied Files
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        script: |
-          ls -la ~/chatlink
-          ls -la ~/chatlink/nginx
-
-    # Step 9: Deploy the Application on the EC2 Instance
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@v0.1.10
-      env:
-        VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
-        PORT: ${{ secrets.PORT }}
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        DB_PORT: ${{ secrets.DB_PORT }}
-        DB_USER: ${{ secrets.DB_USER }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-        ACCESS_TOKEN_EXPIRY: ${{ secrets.ACCESS_TOKEN_EXPIRY }}
-        REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
-        REFRESH_TOKEN_EXPIRY: ${{ secrets.REFRESH_TOKEN_EXPIRY }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        script: |
-          cd ~/chatlink
-          docker-compose pull
-          docker-compose down
-          docker-compose up -d
-
-    # Step 10: Verify Deployment
-    - name: Verify Deployment
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        script: |
-          docker ps
-          docker-compose ps
+      - name: Verify Deployment
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            docker ps
+            docker-compose ps

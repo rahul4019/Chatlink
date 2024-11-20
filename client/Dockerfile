@@ -1,6 +1,10 @@
 # build stage
 FROM node:22-alpine as build
 
+# Add build argument
+ARG VITE_BASE_URL
+ENV VITE_BASE_URL=$VITE_BASE_URL
+
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
