@@ -62,7 +62,7 @@ jobs:
 
       - name: Build and Push Docker Images # builds docker images and pushes them to docker hub
         run: |
-          docker-compose --env-file .env build
+          docker-compose --env-file .env build --no-cache
           docker-compose push 
 
       - name: Prepare EC2 Instance # cleanup step to ensure clean deployment
