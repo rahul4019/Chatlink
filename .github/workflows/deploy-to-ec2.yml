@@ -3,13 +3,14 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # for manually running the pipeline
+  workflow_dispatch: # allow manual trigger of the pipeline 
 
 jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
     env:
+      # environment variables from github secrets
       VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
       PORT: ${{ secrets.PORT }}
       DB_HOST: ${{ secrets.DB_HOST }}
@@ -27,21 +28,21 @@ jobs:
       AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
 
     steps: 
-      - name: Checkout Code
+      - name: Checkout Code # pulls the latest code from the repo 
         uses: actions/checkout@v4
 
-      - name: Install Docker Compose
+      - name: Install Docker Compose # installing doceker-compose on the runner machine
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Log in to Docker Hub
+      - name: Log in to Docker Hub # logs in to docker hub to push/pull images
         uses: docker/login-action@v3
         with: 
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Create env file
+      - name: Create env file # creates .env file, will be passed to the ec2
         run: |
           echo "VITE_BASE_URL=$VITE_BASE_URL" > .env
           echo "PORT=$PORT" >> .env
@@ -59,12 +60,12 @@ jobs:
           echo "AWS_REGION=$AWS_REGION" >> .env
           echo "AWS_S3_BUCKET_NAME=$AWS_S3_BUCKET_NAME" >> .env
 
-      - name: Build and Push Docker Images
+      - name: Build and Push Docker Images # builds docker images and pushes them to docker hub
         run: |
           docker-compose --env-file .env build
           docker-compose push 
 
-      - name: Prepare EC2 Instance
+      - name: Prepare EC2 Instance # cleanup step to ensure clean deployment
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -76,7 +77,7 @@ jobs:
             rm -f ~/chatlink/docker-compose.yml
             rm -f ~/chatlink/.env
 
-      - name: Copy docker-compose file
+      - name: Copy docker-compose file # copies docker-compose and .env to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -86,7 +87,7 @@ jobs:
           target: ~/chatlink/
           overwrite: true
 
-      - name: Copy nginx directory
+      - name: Copy nginx directory # copies nginx directory to the EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -96,7 +97,7 @@ jobs:
           target: ~/chatlink/
           overwrite: true
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 # pulls latest image, stops running containers and starts new ones
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -108,7 +109,7 @@ jobs:
             docker-compose down
             docker-compose --env-file .env up -d
 
-      - name: Verify Deployment
+      - name: Verify Deployment # verifies by listing running containers
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
