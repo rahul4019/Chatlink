@@ -24,7 +24,7 @@ app.use(
   }),
 );
 
-app.get("/", (_: Request, res: Response) => {
+app.get("/api/v1/test", (_: Request, res: Response) => {
   const response: ApiResponse = {
     success: true,
     message: "Hello from chatlink-api",
