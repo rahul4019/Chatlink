@@ -60,7 +60,7 @@ const Home = () => {
             to="/"
             className="text-primary text-2xl font-bold transition-all duration-300 hover:scale-105"
           >
-            ChatLink
+            ChatLink1
           </Link>
           <div className="flex space-x-4">
             <div>
