@@ -1,4 +1,5 @@
 name: ChatLink CI/CD Pipeline
+
 on:
   push:
     branches:
@@ -10,6 +11,7 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     env:
+      IMAGE_TAG: ${{github.sha}}
       # environment variables from github secrets
       VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
       PORT: ${{ secrets.PORT }}
@@ -61,9 +63,11 @@ jobs:
           echo "AWS_S3_BUCKET_NAME=$AWS_S3_BUCKET_NAME" >> .env
 
       - name: Build and Push Docker Images # builds docker images and pushes them to docker hub
+
+        # build with specific tag
         run: |
-          docker-compose --env-file .env build --no-cache
-          docker-compose push 
+          IMAGE_TAG=${{github.sha}} docker-compose --env-file .env build --no-cache
+          IMAGE_TAG=${{github.sha}} docker-compose push 
 
       - name: Prepare EC2 Instance # cleanup step to ensure clean deployment
         uses: appleboy/ssh-action@v0.1.10
@@ -103,11 +107,12 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          # force remove old containers and images
           script: |
             cd ~/chatlink
-            docker-compose pull
-            docker-compose down
-            docker-compose --env-file .env up -d
+            docker-compose down --rmi all
+            IMAGE_TAG=${{ github.sha }} docker-compose --env-file .env pull
+            IMAGE_TAG=${{ github.sha }} docker-compose --env-file .env up -d
 
       - name: Verify Deployment # verifies by listing running containers
         uses: appleboy/ssh-action@v0.1.10

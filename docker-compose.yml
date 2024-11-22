@@ -7,7 +7,7 @@ services:
       - client-build:/usr/share/nginx/html
     ports:
       - "80:80"
-      - "443:443"  # Added for HTTPS
+      - "443:443"  
     depends_on:
       - client
       - api
@@ -16,8 +16,8 @@ services:
     build:
       context: ./client
       args:
-        - VITE_BASE_URL=${VITE_BASE_URL}
-    image: rahul4019/chatlink:client-latest
+        - BASE_URL=${VITE_BASE_URL}
+    image: rahul4019/chatlink:client-${IMAGE_TAG:-latest}
     volumes:
       - client-build:/usr/share/nginx/html
     expose:
@@ -26,7 +26,7 @@ services:
   api:
     build:
       context: ./api
-    image: rahul4019/chatlink:api-latest
+    image: rahul4019/chatlink:api-${IMAGE_TAG:-latest}
     environment:
       - NODE_ENV=production
       - PORT=${PORT}
