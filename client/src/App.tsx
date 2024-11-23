@@ -10,6 +10,7 @@ import { useAppDispatch } from "./app/hooks";
 import { setUser } from "./features/auth/authSlice";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -39,6 +40,7 @@ function App() {
           path="/chat"
           element={<ProtectedRoute>{<Chat />}</ProtectedRoute>}
         />
+        <Route path="*" element={<PublicRoute>{<NotFound />}</PublicRoute>} />
       </Routes>
     </ThemeProvider>
   );
