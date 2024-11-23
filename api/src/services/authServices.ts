@@ -47,7 +47,7 @@ export const registerUser = async (
   // check if username already exist
   const usernameExist = await userNameExist(username);
 
-  if (usernameExist) {
+  if (!usernameExist) {
     throw new CustomError("Username already exists", 400);
   }
 

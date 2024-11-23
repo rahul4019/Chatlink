@@ -35,10 +35,7 @@ export const checkUsernameAvailability = createAsyncThunk<
   async (username: string, { dispatch, rejectWithValue }) => {
     dispatch(usernameCheckStart());
     try {
-      const response = await axiosInstance.get(
-        `/user/unique-username?username=${username}`,
-      );
-      console.log(response);
+      await axiosInstance.get(`/auth/unique-username?username=${username}`);
       dispatch(usernameCheckSuccess());
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || "Server error";

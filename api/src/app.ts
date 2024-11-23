@@ -18,8 +18,8 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    // origin: process.env.CLIENT_URL,
-    origin: "https://chatlink.uk.to",
+    origin: process.env.CLIENT_URL,
+    // origin: "https://chatlink.uk.to",
     credentials: true,
   }),
 );
