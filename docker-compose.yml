@@ -16,7 +16,7 @@ services:
     build:
       context: ./client
       args:
-        - BASE_URL=${VITE_BASE_URL}
+        - VITE_BASE_URL=${VITE_BASE_URL}
     image: rahul4019/chatlink:client-${IMAGE_TAG:-latest}
     volumes:
       - client-build:/usr/share/nginx/html
@@ -43,6 +43,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_REGION=${AWS_REGION}
       - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - CLIENT_URL=${CLIENT_URL}
     expose:
       - "8000"
 

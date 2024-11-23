@@ -28,6 +28,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+      CLIENT_URL: ${{secrets.CLIENT_URL}}
 
     steps: 
       - name: Checkout Code # pulls the latest code from the repo 
@@ -61,6 +62,7 @@ jobs:
           echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
           echo "AWS_REGION=$AWS_REGION" >> .env
           echo "AWS_S3_BUCKET_NAME=$AWS_S3_BUCKET_NAME" >> .env
+          echo "CLIENT_URL=$CLIENT_URL" >> .env
 
       - name: Build and Push Docker Images # builds docker images and pushes them to docker hub
 
@@ -113,6 +115,8 @@ jobs:
 
             docker-compose down --rmi all
             docker system prune -af
+
+            docker volume rm chatlink_client-build || true
 
             IMAGE_TAG=${{ github.sha }} docker-compose --env-file .env pull
             IMAGE_TAG=${{ github.sha }} docker-compose --env-file .env up -d

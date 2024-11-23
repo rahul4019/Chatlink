@@ -1,11 +1,11 @@
 # Build stage
 FROM node:22-alpine as build
 
-# environment variable
-ENV BASE_URL=$VITE_BASE_URL
-
 # add build argument 
-ARG BASE_URL
+ARG VITE_BASE_URL
+
+# environment variable
+ENV VITE_BASE_URL=${VITE_BASE_URL}
 
 WORKDIR /app
 
