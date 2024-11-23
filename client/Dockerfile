@@ -3,9 +3,11 @@ FROM node:22-alpine as build
 
 # add build argument 
 ARG VITE_BASE_URL
+ARG VITE_API_BASE_URL
 
 # environment variable
 ENV VITE_BASE_URL=${VITE_BASE_URL}
+ENV VITE_API_BASE_URL=${VITE_BASE_URL}
 
 WORKDIR /app
 
