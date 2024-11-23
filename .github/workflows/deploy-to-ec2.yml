@@ -14,6 +14,7 @@ jobs:
       IMAGE_TAG: ${{github.sha}}
       # environment variables from github secrets
       VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+      VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
       PORT: ${{ secrets.PORT }}
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
@@ -48,6 +49,7 @@ jobs:
       - name: Create env file # creates .env file, will be passed to the ec2
         run: |
           echo "VITE_BASE_URL=$VITE_BASE_URL" > .env
+          echo "VITE_API_BASE_URL=$VITE_API_BASE_URL" > .env
           echo "PORT=$PORT" >> .env
           echo "DB_HOST=$DB_HOST" >> .env
           echo "DB_NAME=$DB_NAME" >> .env
