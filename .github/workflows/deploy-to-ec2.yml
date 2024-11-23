@@ -112,7 +112,7 @@ jobs:
             cd ~/chatlink
 
             docker-compose down --rmi all
-            docker-system prune -af
+            docker system prune -af
 
             IMAGE_TAG=${{ github.sha }} docker-compose --env-file .env pull
             IMAGE_TAG=${{ github.sha }} docker-compose --env-file .env up -d
