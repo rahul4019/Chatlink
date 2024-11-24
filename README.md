@@ -10,10 +10,10 @@
 
 ## 📑 Table of Contents
 
-1. [✨ Features](#features)
-2. [🛠️ Tech Stack](#️tech-stack)
-3. [🚀 How to Run ChatLink Locally](#how-to-run-chatlink-locally)
-4. [🎉 Contribute](#contribute)
+1. [✨ Features](#-features)
+2. [🛠️ Tech Stack](#️-tech-stack)
+3. [🚀 How to Run ChatLink Locally](#-how-to-run-chatlink-locally)
+4. [🎉 Contribute](#-contribute)
 
 ---
 
@@ -112,7 +112,6 @@ Before starting, make sure you have the following installed:
    ```bash
    git clone https://github.com/rahul4019/Chatlink.git
    cd chatlink
-
    ```
 
 2. **Set Up Environment Files**
@@ -159,8 +158,6 @@ Before starting, make sure you have the following installed:
     - Once both the API and client are running, open your browser and go to: http://localhost:5173
     - You should now see the ChatLink web app! 🎉
 
-
-
 ## 🎉 Contribute
 
 We welcome contributions to ChatLink! Here's how you can get involved:
@@ -183,4 +180,4 @@ We welcome contributions to ChatLink! Here's how you can get involved:
 - Open an issue for help or tag me (@rahul4019) in your PR.
 - You can also contact me at [rahuldevstack@gmail.com](mailto:rahuldevstack@gmail.com).
 
-Let’s make ChatLink even better together! 🚀
+Let's make ChatLink even better together! 🚀
