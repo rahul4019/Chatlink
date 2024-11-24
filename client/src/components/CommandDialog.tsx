@@ -14,11 +14,17 @@ import { ScrollArea } from "./ui/scroll-area";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { searchUsers } from "@/features/users/usersSlice";
 import { CommandEmpty } from "cmdk";
+import { SelectedUser } from "@/types/user";
+import { setSelectedUser } from "@/features/chat/chatSlice";
+import { userOnline } from "@/socketService";
+import { getChats } from "@/features/chat/chatThunk";
+import { toggleChatSelection } from "@/features/user/userSlice";
 
 export function CommandDialogCompnent() {
   const dispatch = useAppDispatch();
   const { isOpen } = useAppSelector((state) => state.dialog);
   const { users, loading, error } = useAppSelector((state) => state.users);
+  const { user: loggedInUser } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getAllUsers());
@@ -29,6 +35,20 @@ export function CommandDialogCompnent() {
       dispatch(getAllUsers());
     }
     dispatch(searchUsers(value));
+  };
+
+  const handleNewChat = (user: SelectedUser) => {
+    dispatch(toggleChatSelection(true));
+
+    // set the profile of the selected user
+    dispatch(setSelectedUser(user));
+
+    // get the user's online status
+    userOnline({ senderId: loggedInUser?.id!, receiverId: user.id });
+
+    // get all the chats between the logged in user and selected user
+    dispatch(getChats({ userId1: loggedInUser?.id!, userId2: user.id }));
+    dispatch(closeDialog());
   };
 
   return (
@@ -82,7 +102,8 @@ export function CommandDialogCompnent() {
                 {users.map((user) => (
                   <div
                     key={user.id}
-                    className="flex items-center gap-3 p-4 rounded-md hover:bg-secondary  cursor-pointer"
+                    className="flex items-center gap-3 p-4 rounded-md hover:bg-secondary cursor-pointer"
+                    onClick={() => handleNewChat(user)}
                   >
                     <Avatar>
                       <AvatarImage src={user.profile_picture} />
