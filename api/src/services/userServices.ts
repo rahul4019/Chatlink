@@ -44,6 +44,6 @@ export const checkUsernameExist = async (
   return await userNameExist(username);
 };
 
-export const getUsers = async (): Promise<PublicUser[]> => {
-  return await allUsers();
+export const getUsers = async (id: string): Promise<PublicUser[]> => {
+  return await allUsers(id);
 };

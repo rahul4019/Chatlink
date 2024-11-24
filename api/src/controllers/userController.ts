@@ -155,19 +155,24 @@ export const isUsernameUnique = async (
 };
 
 export const getAllUsers = async (
-  _: Request,
+  request: Request,
   res: Response,
   next: NextFunction,
 ): Promise<Response<ApiResponse> | void> => {
   try {
-    const users = await getUsers();
+    if (request.user) {
+      const { id } = request.user;
+      const users = await getUsers(id);
 
-    const response: ApiResponse = {
-      success: true,
-      data: { users },
-    };
+      const response: ApiResponse = {
+        success: true,
+        data: { users },
+      };
 
-    return res.status(200).json(response);
+      return res.status(200).json(response);
+    } else {
+      throw new CustomError("Invalid request", 400);
+    }
   } catch (error) {
     console.log("Error getting users", error);
     next(error);

@@ -180,14 +180,22 @@ export const userNameExist = async (username: string): Promise<boolean> => {
   }
 };
 
-export const allUsers = async (): Promise<PublicUser[]> => {
+export const allUsers = async (id: string): Promise<PublicUser[]> => {
   try {
     const allUsersQuery = `
-      SELECT id, email, username, profile_picture, status_message, is_online, last_seen 
-      From users;
+      SELECT 
+      id, 
+      email, 
+      username, 
+      profile_picture, 
+      status_message, 
+      is_online, 
+      last_seen 
+      From users
+      WHERE id != $1;
     `;
 
-    const result = await query(allUsersQuery);
+    const result = await query(allUsersQuery, [id]);
 
     const users: PublicUser[] = result.rows;
     return users;

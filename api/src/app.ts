@@ -19,12 +19,11 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
-    // origin: "https://chatlink.uk.to",
     credentials: true,
   }),
 );
 
-app.get("/api/v1/test", (_: Request, res: Response) => {
+app.get("/api/v1", (_: Request, res: Response) => {
   const response: ApiResponse = {
     success: true,
     message: "Hello from chatlink-api",
@@ -33,7 +32,7 @@ app.get("/api/v1/test", (_: Request, res: Response) => {
   return res.status(200).json(response);
 });
 
-app.get("/test-db", async (_: Request, res: Response) => {
+app.get("/api/v1/test-db", async (_: Request, res: Response) => {
   try {
     const result = await query("SELECT NOW()");
 
