@@ -2,6 +2,8 @@
 
 **ChatLink** is a sleek, real-time messaging web app featuring customizable profiles and secure authentication. Built with Node.js, Express, Socket.io, and PostgreSQL on the backend, and a responsive React frontend with TypeScript.
 
+[![CI/CD](https://github.com/rahul4019/ChatLink/actions/workflows/deploy-to-ec2.yml/badge.svg)](https://github.com/rahul4019/ChatLink/actions/workflows/deploy-to-ec2.yml)
+
 🌐 **Live Demo**: [chatlink.uk.to](http://chatlink.uk.to)
 
 ![ChatLink Banner](./client/src/assets/banner.png)
