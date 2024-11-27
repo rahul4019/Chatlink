@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, Dispatch, SetStateAction, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -38,6 +38,7 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const { chats, loading } = useAppSelector((state) => state.user);
   const { user } = useAppSelector((state) => state.auth);
@@ -45,38 +46,57 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
 
   useEffect(() => {
     dispatch(getUserChatHistory());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
+    const checkIsMobile = () => {
+      const isMobileView = window.innerWidth < 768;
+      setIsMobile(isMobileView);
+      if (!isMobileView) {
+        setSidebarOpen(true);
+      }
+    };
     checkIsMobile();
     window.addEventListener("resize", checkIsMobile);
     return () => window.removeEventListener("resize", checkIsMobile);
-  }, []);
+  }, [setSidebarOpen]);
 
-  // handles chat selection
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        isMobile &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
+        setSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [isMobile, setSidebarOpen]);
+
   const handleChatSelection = (chat: any) => {
     dispatch(toggleChatSelection(true));
 
-    // find the selected user's id from the chat object
     const selectedUserId =
       user?.id === chat.sender_id ? chat.receiver_id : chat.sender_id;
 
-    // user object for the selectedUser
     const selectedUser: SelectedUser = {
       id: selectedUserId,
       username: chat.username,
       profile_picture: chat.profile_picture,
     };
 
-    // set the profile of the selected user
     dispatch(setSelectedUser(selectedUser));
-
-    // get the user's online status
     userOnline({ senderId: user?.id!, receiverId: selectedUser.id });
-
-    // get all the chats between the logged in user and selected user
     dispatch(getChats({ userId1: user?.id!, userId2: selectedUser.id }));
+
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
   };
 
   const filteredChats = chats.filter(
@@ -84,8 +104,9 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
       chat.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       chat.message_text.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
   return (
-    <div className="w-full">
+    <div ref={sidebarRef} className="w-full">
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-2">
           <Avatar>
@@ -104,7 +125,6 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
                 <UserRoundPen size={16} className="mr-2" />
