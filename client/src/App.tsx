@@ -11,6 +11,7 @@ import { setUser } from "./features/auth/authSlice";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -39,6 +40,10 @@ function App() {
         <Route
           path="/chat"
           element={<ProtectedRoute>{<Chat />}</ProtectedRoute>}
+        />
+        <Route
+          path="/profile"
+          element={<ProtectedRoute>{<Profile />}</ProtectedRoute>}
         />
         <Route path="*" element={<PublicRoute>{<NotFound />}</PublicRoute>} />
       </Routes>
