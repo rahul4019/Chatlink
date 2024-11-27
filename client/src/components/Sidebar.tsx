@@ -87,7 +87,15 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between p-4 border-b border-border">
-        <h1 className="text-xl font-semibold">Chats</h1>
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage src={user?.profile_picture} alt="avatar" />
+            <AvatarFallback>
+              <CircleUserRound size={35} className="text-accent" />
+            </AvatarFallback>
+          </Avatar>
+          <h1 className="text-xl font-semibold">Chats</h1>
+        </div>
         <div className="flex gap-2">
           <CommandDialogCompnent />
           <DropdownMenu>
