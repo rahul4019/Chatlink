@@ -29,6 +29,7 @@ import { setSelectedUser } from "@/features/chat/chatSlice";
 import { SelectedUser } from "@/types/user";
 import { getChats } from "@/features/chat/chatThunk";
 import { userOnline } from "@/socketService";
+import { Link } from "react-router-dom";
 
 type SidebarProps = {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
@@ -128,7 +129,9 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
                 <UserRoundPen size={16} className="mr-2" />
-                <span>Profile</span>
+                <Link to="/profile">
+                  <span>Profile</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer flex items-center"
