@@ -4,7 +4,7 @@
 
 [![CI/CD](https://github.com/rahul4019/ChatLink/actions/workflows/deploy-to-ec2.yml/badge.svg)](https://github.com/rahul4019/ChatLink/actions/workflows/deploy-to-ec2.yml)
 
-🌐 **Live Demo**: [chatlink.my.to](http://chatlink.uk.to)
+🌐 **Live Demo**: [chatlink.my.to](http://chatlink.my.to)
 
 <img src="./client/src/assets/banner.png" alt="Image Description" width="full" style="border-radius: 30px;">
 
