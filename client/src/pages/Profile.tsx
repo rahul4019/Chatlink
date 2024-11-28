@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,27 +13,27 @@ import { useAppSelector } from "@/app/hooks";
 import { UpdatePasswordForm } from "@/components/UserProfile/UpdatePasswordForm";
 
 export default function UserProfile() {
-  const [isEditing, setIsEditing] = useState(false);
+  // const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAppSelector((state) => state.auth);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // const handleInputChange = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setFormData((prev) => ({
-          ...prev,
-          avatar: e.target?.result as string,
-        }));
-      };
+      // reader.onload = (e) => {
+      //   setFormData((prev: any) => ({
+      //     ...prev,
+      //     avatar: e.target?.result as string,
+      //   }));
+      // };
       reader.readAsDataURL(file);
     }
   };
@@ -87,8 +87,8 @@ export default function UserProfile() {
                       id="bio"
                       name="bio"
                       value={user?.status_message}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
+                      // onChange={handleInputChange}
+                      // disabled={!isEditing}
                       rows={4}
                       className="resize-none w-full"
                     />
@@ -104,8 +104,8 @@ export default function UserProfile() {
                           id="username"
                           name="username"
                           value={user?.username}
-                          onChange={handleInputChange}
-                          disabled={!isEditing}
+                          // onChange={handleInputChange}
+                          // disabled={!isEditing}
                           className="border-0 focus-visible:ring-0"
                         />
                       </div>
@@ -122,9 +122,14 @@ export default function UserProfile() {
           {/* back button */}
           <div className="px-6 py-4 bg-muted/10 flex justify-between items-center">
             <Link to="/chat">
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Chat
+              <Button className="group border-2 border-primary" variant="ghost">
+                <ArrowLeft
+                  className="-ms-1 me-2 opacity-60 transition-transform group-hover:-translate-x-0.5 "
+                  size={16}
+                  strokeWidth={2}
+                  aria-hidden="true"
+                />
+                Back to chat
               </Button>
             </Link>
           </div>

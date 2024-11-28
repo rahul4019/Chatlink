@@ -160,13 +160,15 @@ export function UpdatePasswordForm() {
             </div>
           </>
         ) : (
-          <Button
-            type="submit"
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={() => setIsUpdatePassword(true)}
-          >
-            Update Password
-          </Button>
+          <div className="flex w-full justify-end">
+            <Button
+              type="submit"
+              className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => setIsUpdatePassword(true)}
+            >
+              Update Password
+            </Button>
+          </div>
         )}
       </form>
     </Form>

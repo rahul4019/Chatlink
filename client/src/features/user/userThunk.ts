@@ -43,7 +43,7 @@ export const updatePassword = createAsyncThunk(
     try {
       dispatch(updatePasswordStart());
 
-      const response = await axiosInstance.patch("/user/password", {
+      await axiosInstance.patch("/user/password", {
         currentPassword,
         newPassword,
         confirmNewPassword,
