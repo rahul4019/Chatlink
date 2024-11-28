@@ -73,5 +73,9 @@ export const updatePassword = async (
     throw new CustomError("Incorrect current Password", 401);
   }
 
-  await updateUserPasswordByEmail(email, newPassword);
+  // password hashing
+  const saltRounds = 12;
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+  await updateUserPasswordByEmail(email, hashedPassword);
 };
