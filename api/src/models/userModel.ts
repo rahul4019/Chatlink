@@ -242,3 +242,21 @@ export const chatHistory = async (id: string): Promise<Array<LatestChat>> => {
     throw new CustomError("Could not get chat history", 500);
   }
 };
+
+export const updateUserPasswordByEmail = async (
+  email: string,
+  newPassword: string,
+): Promise<void> => {
+  const updateUserPasswordQuery = `
+    UPDATE users
+    SET password = $2 
+    WHERE email = $1;
+  `;
+
+  try {
+    await query(updateUserPasswordQuery, [email, newPassword]);
+  } catch (error) {
+    console.log("Error updating user password", error);
+    throw new CustomError("Could not update user's password", 500);
+  }
+};

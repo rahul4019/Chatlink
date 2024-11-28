@@ -1,12 +1,15 @@
 import {
   allUsers,
+  getUserDetails,
   getUserDetailsById,
   updateProfilePicture,
   updateUserDetailsById,
+  updateUserPasswordByEmail,
   userNameExist,
 } from "../models/userModel";
 import { PublicUser } from "../types/user";
 import CustomError from "../utils/customError";
+import bcrypt from "bcrypt";
 
 export const updateUserProfilePicture = async (
   id: string,
@@ -46,4 +49,29 @@ export const checkUsernameExist = async (
 
 export const getUsers = async (id: string): Promise<PublicUser[]> => {
   return await allUsers(id);
+};
+
+export const updatePassword = async (
+  email: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  // check if user exist
+  const userDetails = await getUserDetails(email);
+
+  if (!userDetails.email) {
+    throw new CustomError("No user found with this email", 400);
+  }
+
+  // compare the password
+  const isPasswordCorrect = await bcrypt.compare(
+    currentPassword,
+    userDetails.password,
+  );
+
+  if (!isPasswordCorrect) {
+    throw new CustomError("Incorrect current Password", 401);
+  }
+
+  await updateUserPasswordByEmail(email, newPassword);
 };

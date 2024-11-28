@@ -14,7 +14,6 @@ import { updatePasswordSchema } from "@/schemas/updatePasswordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useAppSelector } from "@/app/hooks";
-import { Pencil } from "lucide-react";
 
 export function UpdatePasswordForm() {
   const [updatePassword, setUpdatePassword] = useState(false);

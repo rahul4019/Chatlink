@@ -83,7 +83,7 @@ export const loginUser = async (
   );
 
   if (!isPasswordCorrect) {
-    throw new CustomError("Incorrect Email Password", 401);
+    throw new CustomError("Incorrect Email or Password", 401);
   }
 
   const {

@@ -65,6 +65,7 @@ export const userLogin = async (
   }
 
   const { email, password } = result.data;
+
   try {
     const cookieOptions = {
       httpOnly: true,

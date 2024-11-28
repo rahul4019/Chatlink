@@ -5,11 +5,16 @@ import { deleteExistingProfilePicture, s3Upload } from "../utils/s3Upload";
 import {
   checkUsernameExist,
   getUsers,
+  updatePassword,
   updateUser,
   updateUserProfilePicture,
 } from "../services/userServices";
 import { getProfilePictureById } from "../models/userModel";
-import { usernameSchema, userUpdateSchema } from "../validators/userValidators";
+import {
+  usernameSchema,
+  userUpdatePasswordSchema,
+  userUpdateSchema,
+} from "../validators/userValidators";
 
 export const updateProfilePicture = async (
   req: Request,
@@ -175,6 +180,50 @@ export const getAllUsers = async (
     }
   } catch (error) {
     console.log("Error getting users", error);
+    next(error);
+  }
+};
+
+export const updateUserPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<Response<ApiResponse> | void> => {
+  // zod validation
+  const result = userUpdatePasswordSchema.safeParse(req.body);
+
+  if (!result.success) {
+    const response: ApiResponse = {
+      success: false,
+      message: "Validation failed",
+      data: result.error.errors,
+    };
+
+    return res.status(400).json(response);
+  }
+
+  const { currentPassword, newPassword } = result.data;
+
+  const email = req.user?.email;
+
+  if (!email) {
+    const response: ApiResponse = {
+      success: false,
+      message: "Unautherized request",
+    };
+
+    return res.status(400).json(response);
+  }
+  try {
+    await updatePassword(email, currentPassword, newPassword);
+    const response: ApiResponse = {
+      success: true,
+      message: "Password updated",
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log("Error while updating user password: ", error);
     next(error);
   }
 };
