@@ -30,6 +30,12 @@ export function UpdatePasswordForm() {
 
   const form = useForm({
     resolver: zodResolver(updatePasswordSchema),
+    defaultValues: {
+      email: user?.email,
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
   });
 
   const onSubmit = async (data: z.infer<typeof updatePasswordSchema>) => {
@@ -44,6 +50,8 @@ export function UpdatePasswordForm() {
           content: "Password updated",
           variant: "success",
         });
+        setIsUpdatePassword(false);
+        form.reset();
       } else if (updatePassword.rejected.match(resultAction)) {
         throw new Error(passwordUpdateError || "Password update failed");
       }
@@ -74,7 +82,7 @@ export function UpdatePasswordForm() {
         <FormField
           control={form.control}
           name="currentPassword"
-          disabled={!updatePassword}
+          disabled={!isUpdatePassword}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Current Password</FormLabel>
@@ -83,6 +91,7 @@ export function UpdatePasswordForm() {
                   placeholder={
                     isUpdatePassword ? "Enter Current Password" : "*********"
                   }
+                  type="password"
                   {...field}
                 />
               </FormControl>
