@@ -6,14 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Camera,
-  Mail,
-  User,
-  Lock,
-  ArrowLeft,
-  CircleUserRound,
-} from "lucide-react";
+import { Camera, User, ArrowLeft, CircleUserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useAppSelector } from "@/app/hooks";
@@ -21,7 +14,6 @@ import { UpdatePasswordForm } from "@/components/UserProfile/UpdatePasswordForm"
 
 export default function UserProfile() {
   const [isEditing, setIsEditing] = useState(false);
-  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAppSelector((state) => state.auth);
 
@@ -121,53 +113,7 @@ export default function UserProfile() {
                   </div>
                 </TabsContent>
                 <TabsContent value="account" className="space-y-6">
-                  {/* view email and password */}
-
-                  {/* email */}
-                  {!isUpdatingPassword ? (
-                    <div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm font-medium">
-                          Email
-                        </Label>
-                        <div className="flex items-center space-x-2 border rounded-md p-2">
-                          <Mail className="text-muted-foreground flex-shrink-0" />
-                          <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            value={user?.email}
-                            disabled={true}
-                            className="border-0 focus-visible:ring-0"
-                          />
-                        </div>
-                      </div>
-                      {/* password */}
-                      <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm font-medium">
-                          Password
-                        </Label>
-                        <div className="flex items-center space-x-2 border rounded-md p-2">
-                          <Mail className="text-muted-foreground flex-shrink-0" />
-                          <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            value={user?.email}
-                            disabled={true}
-                            className="border-0 focus-visible:ring-0"
-                          />
-                        </div>
-                      </div>
-                      <Button onClick={() => setIsUpdatingPassword(true)}>
-                        update password
-                      </Button>
-                    </div>
-                  ) : (
-                    <UpdatePasswordForm
-                      setIsUpdatingPassword={setIsUpdatingPassword}
-                    />
-                  )}
+                  <UpdatePasswordForm />
                 </TabsContent>
               </div>
             </Tabs>
