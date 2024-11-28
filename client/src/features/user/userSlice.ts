@@ -6,6 +6,8 @@ interface UserState {
   chatSelected: boolean;
   loading: boolean;
   error: null | string;
+  passwordUpdateLoading: boolean;
+  passwordUpdateError: null | string;
 }
 
 const initialState: UserState = {
@@ -13,6 +15,8 @@ const initialState: UserState = {
   chatSelected: false,
   loading: false,
   error: null,
+  passwordUpdateLoading: false,
+  passwordUpdateError: null,
 };
 
 export const userSlice = createSlice({
@@ -34,6 +38,17 @@ export const userSlice = createSlice({
     toggleChatSelection(state, action: PayloadAction<boolean>) {
       state.chatSelected = action.payload;
     },
+    updatePasswordStart(state) {
+      state.passwordUpdateLoading = true;
+      state.passwordUpdateError = null;
+    },
+    updatePasswordSuccess(state) {
+      state.passwordUpdateLoading = false;
+    },
+    updatePasswordFailure(state, action: PayloadAction<string>) {
+      state.passwordUpdateLoading = false;
+      state.passwordUpdateError = action.payload;
+    },
   },
 });
 
@@ -42,6 +57,9 @@ export const {
   getUserChatHistorySuccess,
   getUserChatHistoryFailure,
   toggleChatSelection,
+  updatePasswordStart,
+  updatePasswordSuccess,
+  updatePasswordFailure,
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -26,7 +26,7 @@ function App() {
 
   return (
     <ThemeProvider>
-      <Toaster position="top-center" />
+      <Toaster position="bottom-right" />
       <Routes>
         <Route path="/" element={<PublicRoute>{<Home />}</PublicRoute>} />
         <Route

@@ -13,18 +13,46 @@ import { Input } from "@/components/ui/input";
 import { updatePasswordSchema } from "@/schemas/updatePasswordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { LoaderCircle } from "lucide-react";
+import { z } from "zod";
+import { updatePassword } from "@/features/user/userThunk";
+import { showCustomToast } from "../CustomToast";
 
 export function UpdatePasswordForm() {
-  const [updatePassword, setUpdatePassword] = useState(false);
+  const [isUpdatePassword, setIsUpdatePassword] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
+  const { passwordUpdateLoading, passwordUpdateError } = useAppSelector(
+    (state) => state.user,
+  );
+
+  const dispatch = useAppDispatch();
+
   const form = useForm({
     resolver: zodResolver(updatePasswordSchema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    console.log("Make the API call");
+  const onSubmit = async (data: z.infer<typeof updatePasswordSchema>) => {
+    try {
+      const { currentPassword, confirmNewPassword, newPassword } = data;
+      const resultAction = await dispatch(
+        updatePassword({ currentPassword, newPassword, confirmNewPassword }),
+      );
+
+      if (updatePassword.fulfilled.match(resultAction)) {
+        showCustomToast({
+          content: "Password updated",
+          variant: "success",
+        });
+      } else if (updatePassword.rejected.match(resultAction)) {
+        throw new Error(passwordUpdateError || "Password update failed");
+      }
+    } catch (error: any) {
+      showCustomToast({
+        content: passwordUpdateError || "Password update failed",
+        variant: "error",
+      });
+    }
   };
 
   return (
@@ -53,7 +81,7 @@ export function UpdatePasswordForm() {
               <FormControl>
                 <Input
                   placeholder={
-                    updatePassword ? "Enter Current Password" : "*********"
+                    isUpdatePassword ? "Enter Current Password" : "*********"
                   }
                   {...field}
                 />
@@ -63,7 +91,7 @@ export function UpdatePasswordForm() {
           )}
         />
 
-        {updatePassword ? (
+        {isUpdatePassword ? (
           <>
             <FormField
               control={form.control}
@@ -72,7 +100,11 @@ export function UpdatePasswordForm() {
                 <FormItem>
                   <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter new password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Enter new password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -85,7 +117,11 @@ export function UpdatePasswordForm() {
                 <FormItem>
                   <FormLabel>Confirm New Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Retype new password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Retype new password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,14 +130,22 @@ export function UpdatePasswordForm() {
             <div className="flex gap-4 w-full">
               <Button
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white"
-                onClick={() => setUpdatePassword(false)}
+                onClick={() => setIsUpdatePassword(false)}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={passwordUpdateLoading}
               >
+                {passwordUpdateLoading && (
+                  <LoaderCircle
+                    size={16}
+                    strokeWidth={4}
+                    className="animate-spin mr-2"
+                  />
+                )}
                 Save
               </Button>
             </div>
@@ -110,7 +154,7 @@ export function UpdatePasswordForm() {
           <Button
             type="submit"
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={() => setUpdatePassword(true)}
+            onClick={() => setIsUpdatePassword(true)}
           >
             Update Password
           </Button>
