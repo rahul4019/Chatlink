@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useAppSelector } from "@/app/hooks";
 import { UpdatePasswordForm } from "@/components/UserProfile/UpdatePasswordForm";
+import { UpdateUserDetailsForm } from "@/components/UserProfile/UpdateUserDetailsForm";
 
 export default function UserProfile() {
   // const [isEditing, setIsEditing] = useState(false);
@@ -79,38 +80,7 @@ export default function UserProfile() {
               </TabsList>
               <div className="space-y-6">
                 <TabsContent value="profile" className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="bio" className="text-sm font-medium">
-                      Bio
-                    </Label>
-                    <Textarea
-                      id="bio"
-                      name="bio"
-                      value={user?.status_message}
-                      // onChange={handleInputChange}
-                      // disabled={!isEditing}
-                      rows={4}
-                      className="resize-none w-full"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="username" className="text-sm font-medium">
-                        Username
-                      </Label>
-                      <div className="flex items-center space-x-2 border rounded-md p-2">
-                        <User className="text-muted-foreground flex-shrink-0" />
-                        <Input
-                          id="username"
-                          name="username"
-                          value={user?.username}
-                          // onChange={handleInputChange}
-                          // disabled={!isEditing}
-                          className="border-0 focus-visible:ring-0"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <UpdateUserDetailsForm />
                 </TabsContent>
                 <TabsContent value="account" className="space-y-6">
                   <UpdatePasswordForm />

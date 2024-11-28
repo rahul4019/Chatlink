@@ -14,7 +14,7 @@ import { updatePasswordSchema } from "@/schemas/updatePasswordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Lock } from "lucide-react";
 import { z } from "zod";
 import { updatePassword } from "@/features/user/userThunk";
 import { showCustomToast } from "../CustomToast";
@@ -166,7 +166,7 @@ export function UpdatePasswordForm() {
               className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white"
               onClick={() => setIsUpdatePassword(true)}
             >
-              Update Password
+              <Lock className="mr-2 h-4 w-4" /> Update Password
             </Button>
           </div>
         )}

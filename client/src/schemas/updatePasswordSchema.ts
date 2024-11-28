@@ -10,3 +10,19 @@ export const updatePasswordSchema = z
     message: "new password and confirm new password must match",
     path: ["confirmNewPassword"],
   });
+
+export const updateUserDetailsSchema = z.object({
+  statusMessage: z.string().max(150),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters long" })
+    .max(20, { message: "Username must be less than 20 characters" })
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      "Username should only contain alphanumeric characters and underscores",
+    )
+    .regex(
+      /^(?!_)[a-zA-Z0-9_]+(?<!_)$/,
+      "Username should not start or end with an underscore",
+    ),
+});

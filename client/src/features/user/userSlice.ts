@@ -8,6 +8,8 @@ interface UserState {
   error: null | string;
   passwordUpdateLoading: boolean;
   passwordUpdateError: null | string;
+  userDetailsUpdateLoading: boolean;
+  userDetailsUpdateError: null | string;
 }
 
 const initialState: UserState = {
@@ -17,6 +19,8 @@ const initialState: UserState = {
   error: null,
   passwordUpdateLoading: false,
   passwordUpdateError: null,
+  userDetailsUpdateLoading: false,
+  userDetailsUpdateError: null,
 };
 
 export const userSlice = createSlice({
@@ -49,6 +53,17 @@ export const userSlice = createSlice({
       state.passwordUpdateLoading = false;
       state.passwordUpdateError = action.payload;
     },
+    updateUserDetailsStart(state) {
+      state.userDetailsUpdateLoading = true;
+      state.userDetailsUpdateError = null;
+    },
+    updateUserDetailsSuccess(state) {
+      state.userDetailsUpdateLoading = false;
+    },
+    updateUserDetailsFailure(state, action: PayloadAction<string>) {
+      state.userDetailsUpdateLoading = false;
+      state.userDetailsUpdateError = action.payload;
+    },
   },
 });
 
@@ -60,6 +75,9 @@ export const {
   updatePasswordStart,
   updatePasswordSuccess,
   updatePasswordFailure,
+  updateUserDetailsStart,
+  updateUserDetailsSuccess,
+  updateUserDetailsFailure,
 } = userSlice.actions;
 
 export default userSlice.reducer;

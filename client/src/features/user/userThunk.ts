@@ -6,6 +6,9 @@ import {
   updatePasswordFailure,
   updatePasswordStart,
   updatePasswordSuccess,
+  updateUserDetailsFailure,
+  updateUserDetailsStart,
+  updateUserDetailsSuccess,
 } from "./userSlice";
 import { axiosInstance } from "@/utils/axios";
 
@@ -54,6 +57,35 @@ export const updatePassword = createAsyncThunk(
       const errorMessage =
         error.response?.data?.message || "Password update failed";
       dispatch(updatePasswordFailure(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+interface updateUserDetails {
+  statusMessage: string;
+  username: string;
+}
+
+export const updateUserDetails = createAsyncThunk(
+  "/user/details",
+  async (
+    { username, statusMessage }: updateUserDetails,
+    { dispatch, rejectWithValue },
+  ) => {
+    try {
+      dispatch(updateUserDetailsStart());
+
+      await axiosInstance.patch("/user/details", {
+        username,
+        statusMessage,
+      });
+
+      dispatch(updateUserDetailsSuccess());
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Password update failed";
+      dispatch(updateUserDetailsFailure(errorMessage));
       return rejectWithValue(errorMessage);
     }
   },

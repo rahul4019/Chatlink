@@ -17,7 +17,7 @@ router.post(
   upload.single("profile_picture"),
   updateProfilePicture,
 );
-router.put("/update", verifyAccessToken, updateUserDetails);
+router.patch("/details", verifyAccessToken, updateUserDetails);
 router.get("/users", verifyAccessToken, getAllUsers);
 router.patch("/password", verifyAccessToken, updateUserPassword);
 
