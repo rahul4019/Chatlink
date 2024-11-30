@@ -10,6 +10,8 @@ interface UserState {
   passwordUpdateError: null | string;
   userDetailsUpdateLoading: boolean;
   userDetailsUpdateError: null | string;
+  profilePictureUpdateLoading: boolean;
+  profilePictureUpdateError: null | string;
 }
 
 const initialState: UserState = {
@@ -21,6 +23,8 @@ const initialState: UserState = {
   passwordUpdateError: null,
   userDetailsUpdateLoading: false,
   userDetailsUpdateError: null,
+  profilePictureUpdateLoading: false,
+  profilePictureUpdateError: null,
 };
 
 export const userSlice = createSlice({
@@ -64,6 +68,17 @@ export const userSlice = createSlice({
       state.userDetailsUpdateLoading = false;
       state.userDetailsUpdateError = action.payload;
     },
+    profilePictureStart(state) {
+      state.profilePictureUpdateLoading = true;
+      state.profilePictureUpdateError = null;
+    },
+    profilePictureSuccess(state) {
+      state.profilePictureUpdateLoading = false;
+    },
+    profilePictureFailure(state, action: PayloadAction<string>) {
+      state.profilePictureUpdateLoading = false;
+      state.profilePictureUpdateError = action.payload;
+    },
   },
 });
 
@@ -78,6 +93,9 @@ export const {
   updateUserDetailsStart,
   updateUserDetailsSuccess,
   updateUserDetailsFailure,
+  profilePictureStart,
+  profilePictureSuccess,
+  profilePictureFailure,
 } = userSlice.actions;
 
 export default userSlice.reducer;

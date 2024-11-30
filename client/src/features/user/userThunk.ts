@@ -3,6 +3,9 @@ import {
   getUserChatHistoryFailure,
   getUserChatHistoryStart,
   getUserChatHistorySuccess,
+  profilePictureFailure,
+  profilePictureStart,
+  profilePictureSuccess,
   updatePasswordFailure,
   updatePasswordStart,
   updatePasswordSuccess,
@@ -86,6 +89,29 @@ export const updateUserDetails = createAsyncThunk(
       const errorMessage =
         error.response?.data?.message || "Password update failed";
       dispatch(updateUserDetailsFailure(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const profilePictureUpdate = createAsyncThunk(
+  "/user/profile-picture",
+  async (image: File, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(profilePictureStart());
+
+      const formData = new FormData();
+      formData.append("profile_picture", image);
+
+      await axiosInstance.post("/user/profile-picture", {
+        body: formData,
+      });
+
+      dispatch(profilePictureSuccess());
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Picture upload failed";
+      dispatch(profilePictureFailure(errorMessage));
       return rejectWithValue(errorMessage);
     }
   },
