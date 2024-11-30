@@ -98,12 +98,7 @@ export const profilePictureUpdate = createAsyncThunk(
   "/user/profile-picture",
   async (image: File, { dispatch, rejectWithValue }) => {
     try {
-      console.log("IMAGE: ", image);
       dispatch(profilePictureStart());
-      console.log("File details:");
-      console.log("Name:", image.name);
-      console.log("Size:", image.size);
-      console.log("Type:", image.type);
 
       const formData = new FormData();
       formData.append("profile_picture", image);

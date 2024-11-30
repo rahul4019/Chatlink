@@ -1,5 +1,4 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { SyntheticEvent, useRef, useState } from "react";
 import ReactCrop, {
   centerCrop,
@@ -13,17 +12,17 @@ import setCanvasPreview from "./setCanvasPreview";
 const ASPECT_RATIO = 1;
 const MIN_DIMENSTION = 150;
 
-type ImageCropperArg = {
+type ImageCropperProps = {
   setImage: (img: File) => void;
 };
 
-const ImageCropper = ({ setImage }: ImageCropperArg) => {
-  const imgRef = useRef(null);
-  const previewCanvasRef = useRef(null);
+const ImageCropper = ({ setImage }: ImageCropperProps) => {
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [imgSrc, setImgSrc] = useState<string | null>(null);
-  const [crop, setCrop] = useState<Crop>();
-  const [error, setError] = useState("");
+  const [crop, setCrop] = useState<Crop | undefined>(undefined);
+  const [error, setError] = useState<string>("");
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -42,12 +41,14 @@ const ImageCropper = ({ setImage }: ImageCropperArg) => {
       imageElement.src = imageUrl;
 
       imageElement.addEventListener("load", (e) => {
-        if (error) {
-          setError("");
-        }
-        const { naturalWidth, naturalHeight } = e.currentTarget;
+        const target = e.currentTarget as HTMLImageElement;
+
+        if (error) setError("");
+
+        const { naturalWidth, naturalHeight } = target;
+
         if (naturalWidth < MIN_DIMENSTION || naturalHeight < MIN_DIMENSTION) {
-          setError("Image must be atleast 150 x 150 pixel");
+          setError("Image must be at least 150 x 150 pixels");
           return setImgSrc("");
         }
       });
@@ -104,18 +105,20 @@ const ImageCropper = ({ setImage }: ImageCropperArg) => {
           </ReactCrop>
           <Button
             onClick={() => {
-              setCanvasPreview(
-                imgRef.current,
-                previewCanvasRef.current,
-                convertToPixelCrop(
-                  crop,
-                  imgRef.current?.width,
-                  imgRef.current?.height,
-                ),
-                (file) => {
-                  setImage(file);
-                },
-              );
+              if (imgRef.current && previewCanvasRef.current && crop) {
+                setCanvasPreview(
+                  imgRef.current,
+                  previewCanvasRef.current,
+                  convertToPixelCrop(
+                    crop,
+                    imgRef.current?.width,
+                    imgRef.current?.height,
+                  ),
+                  (file) => {
+                    setImage(file);
+                  },
+                );
+              }
             }}
           >
             Crop Image
