@@ -1,43 +1,19 @@
-import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, User, ArrowLeft, CircleUserRound } from "lucide-react";
+import { Camera, ArrowLeft, CircleUserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useAppSelector } from "@/app/hooks";
 import { UpdatePasswordForm } from "@/components/UserProfile/UpdatePasswordForm";
 import { UpdateUserDetailsForm } from "@/components/UserProfile/UpdateUserDetailsForm";
+import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import { ProfilePictureModal } from "@/components/ProfilePictureModal";
 
 export default function UserProfile() {
-  // const [isEditing, setIsEditing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAppSelector((state) => state.auth);
-
-  // const handleInputChange = (
-  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  // ) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => ({ ...prev, [name]: value }));
-  // };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      // reader.onload = (e) => {
-      //   setFormData((prev: any) => ({
-      //     ...prev,
-      //     avatar: e.target?.result as string,
-      //   }));
-      // };
-      reader.readAsDataURL(file);
-    }
-  };
 
   return (
     <Layout>
@@ -52,21 +28,7 @@ export default function UserProfile() {
                   <CircleUserRound size={35} className="text-accent" />
                 </AvatarFallback>
               </Avatar>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="absolute bottom-0 right-0 rounded-full"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Camera className="h-4 w-4" />
-              </Button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleAvatarChange}
-                className="hidden"
-                accept="image/*"
-              />
+              <ProfilePictureModal/>
             </div>
             <div className="ml-36 pt-4">
               <CardTitle className="text-2xl">{user?.username}</CardTitle>
@@ -108,3 +70,4 @@ export default function UserProfile() {
     </Layout>
   );
 }
+
