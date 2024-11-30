@@ -4,11 +4,45 @@ import {
   DialogContent,
   DialogFooter,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
-import { Camera } from "lucide-react";
+import { Camera, LoaderCircle } from "lucide-react";
 import ImageCropper from "./ImageCropper";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { profilePictureUpdate } from "@/features/user/userThunk";
+import { showCustomToast } from "./CustomToast";
 
 export function ProfilePictureModal() {
+  const [image, setImage] = useState<File | null>(null);
+  const { profilePictureUpdateLoading, profilePictureUpdateError } =
+    useAppSelector((state) => state.user);
+
+  const dispatch = useAppDispatch();
+
+  const handleSavebutton = async () => {
+    try {
+      const resultAction = await dispatch(profilePictureUpdate(image!));
+
+      if (profilePictureUpdate.fulfilled.match(resultAction)) {
+        showCustomToast({
+          content: "Profile picture updated",
+          variant: "success",
+        });
+      } else if (profilePictureUpdate.rejected.match(resultAction)) {
+        throw new Error(
+          profilePictureUpdateError || "Profile picture not updated",
+        );
+      }
+    } catch (error: any) {
+      showCustomToast({
+        content: profilePictureUpdateError || "Profile picture not updated",
+        variant: "error",
+      });
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -21,9 +55,26 @@ export function ProfilePictureModal() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <ImageCropper />
+        <DialogTitle>Edit profile picture</DialogTitle>
+        <DialogDescription className="DialogDescription">
+          Update your profile picture, Click save when you're done.
+        </DialogDescription>
+        <ImageCropper setImage={setImage} />
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button
+            type="submit"
+            disabled={profilePictureUpdateLoading}
+            onClick={handleSavebutton}
+          >
+            {profilePictureUpdateLoading && (
+              <LoaderCircle
+                size={16}
+                strokeWidth={4}
+                className="animate-spin mr-2"
+              />
+            )}
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

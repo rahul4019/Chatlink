@@ -1,7 +1,10 @@
+import { PixelCrop } from "react-image-crop";
+
 const setCanvasPreview = (
-  image, // HTMLImageElement
-  canvas, // HTMLCanvasElement
-  crop, // PixelCrop
+  image: HTMLImageElement, // HTMLImageElement
+  canvas: HTMLCanvasElement, // HTMLCanvasElement
+  crop: PixelCrop, // PixelCrop
+  callback: (file: File) => void, // Callback to pass the file
 ) => {
   const ctx = canvas.getContext("2d");
   if (!ctx) {
@@ -41,5 +44,17 @@ const setCanvasPreview = (
   );
 
   ctx.restore();
+
+  // Convert the canvas image to a Blob and pass it to the callback
+  canvas.toBlob((blob) => {
+    if (blob) {
+      // Create a File object from the Blob
+      const file = new File([blob], "cropped-image.jpg", {
+        type: "image/jpeg",
+      });
+      callback(file); // Pass the File object to the callback
+    }
+  }, "image/jpeg");
 };
+
 export default setCanvasPreview;

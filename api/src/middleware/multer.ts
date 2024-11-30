@@ -18,6 +18,7 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: multer.FileFilterCallback,
 ) => {
+  console.log("MULTER: ", req.file);
   const allowedTypes = /jpeg|jpg|png/; // regex matching
 
   const extname = allowedTypes.test(

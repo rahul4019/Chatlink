@@ -13,7 +13,11 @@ import setCanvasPreview from "./setCanvasPreview";
 const ASPECT_RATIO = 1;
 const MIN_DIMENSTION = 150;
 
-const ImageCropper = () => {
+type ImageCropperArg = {
+  setImage: (img: File) => void;
+};
+
+const ImageCropper = ({ setImage }: ImageCropperArg) => {
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
 
@@ -49,7 +53,6 @@ const ImageCropper = () => {
       });
 
       setImgSrc(imageUrl);
-      console.log("imageurl: ", imageUrl);
     });
     reader.readAsDataURL(file);
   };
@@ -74,7 +77,6 @@ const ImageCropper = () => {
 
   return (
     <>
-      <Label htmlFor="picture">Choose Picture</Label>
       <Input
         id="picture"
         type="file"
@@ -110,8 +112,10 @@ const ImageCropper = () => {
                   imgRef.current?.width,
                   imgRef.current?.height,
                 ),
+                (file) => {
+                  setImage(file);
+                },
               );
-              const dataUrl = previewCanvasRef.current.toDataURL();
             }}
           >
             Crop Image

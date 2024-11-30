@@ -22,6 +22,8 @@ export const updateProfilePicture = async (
   next: NextFunction,
 ): Promise<Response<ApiResponse> | void> => {
   try {
+    console.log("Req.file: ", req.file);
+
     if (!req.file) {
       throw new CustomError("No file found in request", 400);
     }
