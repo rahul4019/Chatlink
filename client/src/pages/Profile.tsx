@@ -8,8 +8,6 @@ import Layout from "@/components/Layout";
 import { useAppSelector } from "@/app/hooks";
 import { UpdatePasswordForm } from "@/components/UserProfile/UpdatePasswordForm";
 import { UpdateUserDetailsForm } from "@/components/UserProfile/UpdateUserDetailsForm";
-import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
 import { ProfilePictureModal } from "@/components/ProfilePictureModal";
 
 export default function UserProfile() {
@@ -28,7 +26,7 @@ export default function UserProfile() {
                   <CircleUserRound size={35} className="text-accent" />
                 </AvatarFallback>
               </Avatar>
-              <ProfilePictureModal/>
+              <ProfilePictureModal />
             </div>
             <div className="ml-36 pt-4">
               <CardTitle className="text-2xl">{user?.username}</CardTitle>
@@ -70,4 +68,3 @@ export default function UserProfile() {
     </Layout>
   );
 }
-
