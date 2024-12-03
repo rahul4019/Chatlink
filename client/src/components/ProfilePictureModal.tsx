@@ -16,6 +16,7 @@ import { profilePictureUpdate } from "@/features/auth/authThunk";
 
 export function ProfilePictureModal() {
   const [image, setImage] = useState<File | null>(null);
+  const [isOpen, setisOpen] = useState(false);
   const { profilePictureUpdateLoading, profilePictureUpdateError } =
     useAppSelector((state) => state.auth);
 
@@ -30,6 +31,8 @@ export function ProfilePictureModal() {
           content: "Profile picture updated",
           variant: "success",
         });
+        // todo: close the modal
+        setisOpen(false);
       } else if (profilePictureUpdate.rejected.match(resultAction)) {
         throw new Error(
           profilePictureUpdateError || "Profile picture not updated",
@@ -44,7 +47,7 @@ export function ProfilePictureModal() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setisOpen}>
       <DialogTrigger asChild>
         <Button
           variant="secondary"
