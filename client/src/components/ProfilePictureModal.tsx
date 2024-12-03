@@ -11,13 +11,13 @@ import ImageCropper from "./ImageCropper";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { profilePictureUpdate } from "@/features/user/userThunk";
 import { showCustomToast } from "./CustomToast";
+import { profilePictureUpdate } from "@/features/auth/authThunk";
 
 export function ProfilePictureModal() {
   const [image, setImage] = useState<File | null>(null);
   const { profilePictureUpdateLoading, profilePictureUpdateError } =
-    useAppSelector((state) => state.user);
+    useAppSelector((state) => state.auth);
 
   const dispatch = useAppDispatch();
 

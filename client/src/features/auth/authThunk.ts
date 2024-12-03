@@ -13,6 +13,15 @@ import {
   usernameCheckFailure,
   usernameCheckStart,
   usernameCheckSuccess,
+  profilePictureFailure,
+  profilePictureStart,
+  profilePictureSuccess,
+  updatePasswordFailure,
+  updatePasswordStart,
+  updatePasswordSuccess,
+  updateUserDetailsFailure,
+  updateUserDetailsStart,
+  updateUserDetailsSuccess,
 } from "./authSlice";
 
 interface SignupArgs {
@@ -101,6 +110,99 @@ export const logoutUser = createAsyncThunk<void>(
       dispatch(logoutSuccess());
     } catch (error: any) {
       dispatch(logoutFailure(error.response?.data?.message || "Logout failed"));
+    }
+  },
+);
+
+interface UpdatePasswordArgs {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export const updatePassword = createAsyncThunk(
+  "/user/password",
+  async (
+    { currentPassword, newPassword, confirmNewPassword }: UpdatePasswordArgs,
+    { dispatch, rejectWithValue },
+  ) => {
+    try {
+      dispatch(updatePasswordStart());
+
+      await axiosInstance.patch("/user/password", {
+        currentPassword,
+        newPassword,
+        confirmNewPassword,
+      });
+
+      dispatch(updatePasswordSuccess());
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Password update failed";
+      dispatch(updatePasswordFailure(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+interface updateUserDetails {
+  statusMessage: string;
+  username: string;
+}
+
+export const updateUserDetails = createAsyncThunk(
+  "/user/details",
+  async (
+    { username, statusMessage }: updateUserDetails,
+    { dispatch, rejectWithValue },
+  ) => {
+    try {
+      dispatch(updateUserDetailsStart());
+
+      await axiosInstance.patch("/user/details", {
+        username,
+        statusMessage,
+      });
+
+      dispatch(updateUserDetailsSuccess());
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Password update failed";
+      dispatch(updateUserDetailsFailure(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const profilePictureUpdate = createAsyncThunk(
+  "/user/profile-picture",
+  async (image: File, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(profilePictureStart());
+
+      const formData = new FormData();
+      formData.append("profile_picture", image);
+
+      console.log("Formdata: ", formData);
+
+      const response = await axiosInstance.post(
+        "/user/profile-picture",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      const pictureUrl = response.data.data.fileURL;
+
+      dispatch(profilePictureSuccess(pictureUrl));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Picture upload failed";
+      dispatch(profilePictureFailure(errorMessage));
+      return rejectWithValue(errorMessage);
     }
   },
 );

@@ -16,14 +16,14 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { LoaderCircle, Lock } from "lucide-react";
 import { z } from "zod";
-import { updatePassword } from "@/features/user/userThunk";
+import { updatePassword } from "@/features/auth/authThunk";
 import { showCustomToast } from "../CustomToast";
 
 export function UpdatePasswordForm() {
   const [isUpdatePassword, setIsUpdatePassword] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
   const { passwordUpdateLoading, passwordUpdateError } = useAppSelector(
-    (state) => state.user,
+    (state) => state.auth,
   );
 
   const dispatch = useAppDispatch();

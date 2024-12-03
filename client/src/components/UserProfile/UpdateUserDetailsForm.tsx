@@ -18,15 +18,17 @@ import { CircleCheck, CircleX, LoaderCircle, Pencil } from "lucide-react";
 import { z } from "zod";
 import { showCustomToast } from "../CustomToast";
 import { Textarea } from "../ui/textarea";
-import { checkUsernameAvailability } from "@/features/auth/authThunk";
-import { updateUserDetails } from "@/features/user/userThunk";
+import {
+  checkUsernameAvailability,
+  updateUserDetails,
+} from "@/features/auth/authThunk";
 
 export function UpdateUserDetailsForm() {
   const [isEditProfile, setIsEditProfile] = useState(false);
   const { user, isUsernameAvailable, usernameError, loadingUsername } =
     useAppSelector((state) => state.auth);
   const { userDetailsUpdateLoading, userDetailsUpdateError } = useAppSelector(
-    (state) => state.user,
+    (state) => state.auth,
   );
 
   const dispatch = useAppDispatch();

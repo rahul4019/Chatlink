@@ -9,6 +9,12 @@ interface AuthState {
   isUsernameAvailable: boolean;
   usernameError: null | string;
   loadingUsername: boolean;
+  passwordUpdateLoading: boolean;
+  passwordUpdateError: null | string;
+  userDetailsUpdateLoading: boolean;
+  userDetailsUpdateError: null | string;
+  profilePictureUpdateLoading: boolean;
+  profilePictureUpdateError: null | string;
 }
 
 const initialState: AuthState = {
@@ -19,6 +25,12 @@ const initialState: AuthState = {
   isUsernameAvailable: false,
   usernameError: null,
   loadingUsername: false,
+  passwordUpdateLoading: false,
+  passwordUpdateError: null,
+  userDetailsUpdateLoading: false,
+  userDetailsUpdateError: null,
+  profilePictureUpdateLoading: false,
+  profilePictureUpdateError: null,
 };
 
 const authSlice = createSlice({
@@ -80,6 +92,40 @@ const authSlice = createSlice({
       state.usernameError = action.payload;
       state.isUsernameAvailable = false;
     },
+    updatePasswordStart(state) {
+      state.passwordUpdateLoading = true;
+      state.passwordUpdateError = null;
+    },
+    updatePasswordSuccess(state) {
+      state.passwordUpdateLoading = false;
+    },
+    updatePasswordFailure(state, action: PayloadAction<string>) {
+      state.passwordUpdateLoading = false;
+      state.passwordUpdateError = action.payload;
+    },
+    updateUserDetailsStart(state) {
+      state.userDetailsUpdateLoading = true;
+      state.userDetailsUpdateError = null;
+    },
+    updateUserDetailsSuccess(state) {
+      state.userDetailsUpdateLoading = false;
+    },
+    updateUserDetailsFailure(state, action: PayloadAction<string>) {
+      state.userDetailsUpdateLoading = false;
+      state.userDetailsUpdateError = action.payload;
+    },
+    profilePictureStart(state) {
+      state.profilePictureUpdateLoading = true;
+      state.profilePictureUpdateError = null;
+    },
+    profilePictureSuccess(state, action: PayloadAction<string>) {
+      state.profilePictureUpdateLoading = false;
+      state.user!.profile_picture = action.payload;
+    },
+    profilePictureFailure(state, action: PayloadAction<string>) {
+      state.profilePictureUpdateLoading = false;
+      state.profilePictureUpdateError = action.payload;
+    },
   },
 });
 
@@ -97,6 +143,15 @@ export const {
   usernameCheckStart,
   usernameCheckSuccess,
   usernameCheckFailure,
+  updatePasswordStart,
+  updatePasswordSuccess,
+  updatePasswordFailure,
+  updateUserDetailsStart,
+  updateUserDetailsSuccess,
+  updateUserDetailsFailure,
+  profilePictureStart,
+  profilePictureSuccess,
+  profilePictureFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;
