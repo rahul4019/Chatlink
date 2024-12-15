@@ -82,18 +82,21 @@ const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
   const handleChatSelection = (chat: any) => {
     dispatch(toggleChatSelection(true));
 
-    const selectedUserId =
+    const selectUserId =
       user?.id === chat.sender_id ? chat.receiver_id : chat.sender_id;
 
-    const selectedUser: SelectedUser = {
-      id: selectedUserId,
+    // handle unnecessary api calls on same user selection
+    if (selectedUser?.id === selectUserId) return;
+
+    const selectUser: SelectedUser = {
+      id: selectUserId,
       username: chat.username,
       profile_picture: chat.profile_picture,
     };
 
-    dispatch(setSelectedUser(selectedUser));
-    userOnline({ senderId: user?.id!, receiverId: selectedUser.id });
-    dispatch(getChats({ userId1: user?.id!, userId2: selectedUser.id }));
+    dispatch(setSelectedUser(selectUser));
+    userOnline({ senderId: user?.id!, receiverId: selectUser.id });
+    dispatch(getChats({ userId1: user?.id!, userId2: selectUser.id }));
 
     if (isMobile) {
       setSidebarOpen(false);
