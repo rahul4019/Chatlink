@@ -124,19 +124,21 @@ Before starting, make sure you have the following installed:
         cd api
         ```
     
-        Create a .env file by copying the content from .env-example:
+        Create a .env file by copying the content from .api.env.example:
         ```bash
-        cp .env-example .env
+        cp ..api.env.example .env
         ```
+    - Obtain your credentials by creating an account on the respective websites.
+    - Replace env variables with your credentials 
 
     - Navigate to the client folder:
         ```bash
         cd ../client
         ```
 
-        Create a .env file here too by copying the content from .env-example:
+        Create a .env file here too by copying the content from .client.env.example:
         ```bash
-        cp .env-example .env
+        cp .client.env.example .env
         ```
 
 3. **Run the API and Client**
